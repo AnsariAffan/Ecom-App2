@@ -192,11 +192,11 @@ if(products){ return (
     </ScrollView>
 
  {/* {searchQuery.length>0 && filteredData.length 0? } */}
- {searchQuery.length > 0 && filteredData.length == 0 ? 
+ {searchQuery.length > 0 && filteredData.length === 0 ? 
   <Text style={styles.noProducts}>Product not found</Text>
  : <FlatList
       style={{ marginTop: 66 }}
-      data={filteredData ? filteredData : products}
+      data={filteredData.length>0 ? filteredData : products}
       renderItem={renderItem}
       keyExtractor={(item) => item.id.toString()}
       numColumns={2}
