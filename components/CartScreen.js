@@ -11,23 +11,36 @@ import {
 } from "react-native";
 import { Appbar, Button, Card } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { getProductCount } from "./api/mySlice";
+import { getPriceCount, getPriceSum, getProductCount, getProductsFromLocalStorages } from "./api/mySlice";
 import { AlertNotificationRoot, Dialog } from "react-native-alert-notification";
 import { Toast, useToast } from "react-native-toast-notifications";
 
 const CartScreen = ({ navigation }) => {
   const [productList, setProductList] = useState([]);
+  const [priceSum, setpriceSum] = useState();
   const [refresh, setRefresh] = useState(false);
   const dispatch = useDispatch();
   const notification = useToast()
   const count= useSelector((state)=>{return state.mySlice.count})
-  const products = useSelector((state) => {
-    return state.mySlice.products;
-  });
   const priceCount = useSelector((state) => {
     return state.mySlice.priceCount;
   });
-console.log(priceCount)
+  
+  console.log(priceCount)
+// const getSumOfPrice=()=>{
+
+
+//   // create a variable for the sum and initialize it
+//   let sum = 0;
+  
+//   // iterate over each item in the array
+//   for (let i = 0; i < userData.length; i++ ) {
+//     sum += userData[i].price;
+//   }
+  
+//   console.log(sum) // 15
+
+// }
 
   const getDataFromLocalStorage = async () => {
     const data = await AsyncStorage.getItem("userCart");
@@ -40,7 +53,7 @@ console.log(priceCount)
 
   const deleteItems = async (id) => {
     // showNotificationDailogBox()
-    getSumOfCartItem()
+    dispatch(getPriceSum())
     dispatch(getProductCount())
   
     console.log("me ander agaya bhai");
@@ -67,17 +80,16 @@ console.log(priceCount)
   };
 
 
-const getSumOfCartItem=()=>{
 
-  }
 
 
   useEffect(() => {
-   
-    getSumOfCartItem()
+    // getSumOfPrice()
+    dispatch(getPriceSum())
+   dispatch(getProductsFromLocalStorages())
     getDataFromLocalStorage();
     dispatch(getProductCount())
-  }, [navigation, refresh]);
+  }, [navigation, refresh,priceSum]);
 
   return (
   
@@ -148,7 +160,7 @@ const getSumOfCartItem=()=>{
       />:  <Text style={styles.noProducts}>Card is empty</Text>
       }
    
-        <Text style={{fontSize:20,textAlign:"right",paddingRight:10}}>SubTota: {getSumOfCartItem()}</Text>
+        <Text style={{fontSize:20,textAlign:"right",paddingRight:10}}>SubTota: {priceCount} </Text>
    
       <Button
       

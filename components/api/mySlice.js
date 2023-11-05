@@ -59,6 +59,29 @@ export const getProductsFromLocalStorages = createAsyncThunk("api/getProductsFro
 
 
 
+export const getPriceSum = createAsyncThunk("api/getgetPriceSum", async () => {
+  try {
+    const data = await AsyncStorage.getItem("userCart");
+    const convertedData = JSON.parse(data);
+
+      // create a variable for the sum and initialize it
+  let sum = 0;
+  
+  // iterate over each item in the array
+  for (let i = 0; i < convertedData.length; i++ ) {
+    sum += convertedData[i].price;
+  }
+  return sum
+
+    
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+
+
+
 
 
 
@@ -75,7 +98,7 @@ loading:false,
 error:null,
 category:[],
 count:0,
-priceCount:[],
+priceCount:0,
 userData:[]
 
 },
@@ -154,6 +177,12 @@ extraReducers:{
   state.loading=false
   state.error=payload
 },
+
+[getPriceSum.fulfilled]:(state,{payload})=>{
+  state.priceCount=payload
+  state.error=payload
+},
+
 
 }
 
