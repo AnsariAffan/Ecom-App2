@@ -10,7 +10,7 @@ import { ToastProvider } from 'react-native-toast-notifications';
 
 
 const App = () => {
-
+//tested
   return (
     <Provider store={store}>
        <ToastProvider>
