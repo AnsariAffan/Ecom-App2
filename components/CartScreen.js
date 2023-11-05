@@ -7,15 +7,27 @@ import {
   StyleSheet,
   Pressable,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Appbar, Button, Card } from "react-native-paper";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getProductCount } from "./api/mySlice";
+import { AlertNotificationRoot, Dialog } from "react-native-alert-notification";
+import { Toast, useToast } from "react-native-toast-notifications";
 
 const CartScreen = ({ navigation }) => {
   const [productList, setProductList] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const dispatch = useDispatch();
+  const notification = useToast()
+  const count= useSelector((state)=>{return state.mySlice.count})
+  const products = useSelector((state) => {
+    return state.mySlice.products;
+  });
+  const priceCount = useSelector((state) => {
+    return state.mySlice.priceCount;
+  });
+console.log(priceCount)
 
   const getDataFromLocalStorage = async () => {
     const data = await AsyncStorage.getItem("userCart");
@@ -23,8 +35,14 @@ const CartScreen = ({ navigation }) => {
     setProductList(convertedData);
   };
 
+
+
+
   const deleteItems = async (id) => {
+    // showNotificationDailogBox()
+    getSumOfCartItem()
     dispatch(getProductCount())
+  
     console.log("me ander agaya bhai");
     const index = productList.findIndex((item) => item.id === id);
     console.log(index);
@@ -34,18 +52,35 @@ const CartScreen = ({ navigation }) => {
       console.log(productList);
       await AsyncStorage.setItem("userCart", JSON.stringify(productList));
       console.log("mil gaya bhai");
-
+     
       setRefresh(!refresh);
     }
+
+    notification.show("Item deleted successfully",{
+      type: "danger",
+      placement: "bottom",
+      duration: 3000,
+      offset: 30,
+      animationType: "slide-in",
+    })
     console.log("nhi mila bhai");
   };
 
+
+const getSumOfCartItem=()=>{
+
+  }
+
+
   useEffect(() => {
+   
+    getSumOfCartItem()
     getDataFromLocalStorage();
     dispatch(getProductCount())
   }, [navigation, refresh]);
 
   return (
+  
     <View style={styles.container}>
       <Appbar>
         <Appbar.Action
@@ -60,6 +95,8 @@ const CartScreen = ({ navigation }) => {
         />
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>My Cart</Text>
       </Appbar>
+
+      {count>0 ?
       <FlatList
         data={productList}
         renderItem={({ item }) => (
@@ -108,9 +145,10 @@ const CartScreen = ({ navigation }) => {
         )}
         keyExtractor={(item, index) => index.toString()}
         numColumns={1}
-      />
+      />:  <Text style={styles.noProducts}>Card is empty</Text>
+      }
    
-        <Text style={{fontSize:20,textAlign:"right",paddingRight:10}}>SubTota: 100</Text>
+        <Text style={{fontSize:20,textAlign:"right",paddingRight:10}}>SubTota: {getSumOfCartItem()}</Text>
    
       <Button
       
@@ -123,6 +161,7 @@ const CartScreen = ({ navigation }) => {
          Purchase Now
         </Button>
     </View>
+   
   );
 };
 
@@ -144,6 +183,14 @@ const styles = StyleSheet.create({
     color: "green",
     textAlign: "left",
     paddingRight: 20,
+  },
+  noProducts: {
+    flex: 1,
+    textAlign: "center",
+    fontSize: 20,
+    color: "blue",
+    fontWeight: "bold",
+    marginTop:100
   },
 });
 

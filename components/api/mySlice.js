@@ -47,6 +47,18 @@ export const getProductCount = createAsyncThunk("api/getProductCount", async () 
 });
 
 
+export const getProductsFromLocalStorages = createAsyncThunk("api/getProductsFromLocalStorages", async () => {
+  try {
+    const data = await AsyncStorage.getItem("userCart");
+    const convertedData = JSON.parse(data);
+    return  convertedData
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+
+
 
 
 
@@ -62,7 +74,9 @@ products:[],
 loading:false,
 error:null,
 category:[],
-count:0
+count:0,
+priceCount:[],
+userData:[]
 
 },
 
@@ -76,6 +90,7 @@ extraReducers:{
 
 [getAllProducts.fulfilled]:(state,{payload})=>{
     state.products=payload
+    state.priceCount=payload.price
     state.loading = false
 },
 
@@ -122,6 +137,23 @@ extraReducers:{
   state.count=payload
   state.loading = false
 },  
+
+
+
+//for getProductsFromLocalStorage
+[getProductsFromLocalStorages.pending]:(state,action)=>{
+  state.loading = true
+},
+
+[getProductsFromLocalStorages.fulfilled]:(state,{payload})=>{
+  state.userData=payload
+  state.loading = false
+},  
+
+[getProductsFromLocalStorages.rejected]:(state,{payload})=>{
+  state.loading=false
+  state.error=payload
+},
 
 }
 

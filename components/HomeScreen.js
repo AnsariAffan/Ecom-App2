@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+
 } from "react-native";
 import { Button, Card, Searchbar } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -14,8 +15,11 @@ import CartScreen from "./CartScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts, getProductCount, getProductsCategory } from "./api/mySlice";
 import axios from "axios";
+import { useToast } from "react-native-toast-notifications";
 
 const HomeScreen = ({ navigation }) => {
+
+ const notification = useToast()
   const dispatch = useDispatch();
   const products = useSelector((state) => {
     return state.mySlice.products;
@@ -68,6 +72,7 @@ const HomeScreen = ({ navigation }) => {
 
   const handleAddToCart = async (item, navigation) => {
     dispatch(getProductCount())
+  
     console.log(dispatch(getProductCount()))
     let existingCart = await AsyncStorage.getItem("userCart");
     if (!existingCart) {
@@ -84,6 +89,13 @@ const HomeScreen = ({ navigation }) => {
       window.alert("Item is already added to the cart");
     } else {
       existingCart.push(item);
+      notification.show("Cart added successfully",{
+        type: "normal",
+        placement: "bottom",
+        duration: 2000,
+        offset: 30,
+        animationType: "slide-in",
+      })
     }
 
     setCart(existingCart);
@@ -93,12 +105,15 @@ const HomeScreen = ({ navigation }) => {
       index: 0,
       routes: [{ name: "StackNavigator", params: { data: "Reloaded" } }],
     });
-    window.alert("Cart added successfully");
-
+   
     setRefresh(!refresh);
   };
 
+
+
+
   useEffect(() => {
+
     dispatch(getProductCount())
     dispatch(getAllProducts());
     dispatch(getProductsCategory());
@@ -118,6 +133,7 @@ const HomeScreen = ({ navigation }) => {
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         onPress={() => nevigateToProductDetailPage(navigation, item.id)}
       >
+    
         <Card style={styles.card}>
           <View style={styles.imageContainer}>
             <Card.Cover

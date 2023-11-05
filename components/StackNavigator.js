@@ -18,9 +18,6 @@ const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
 
 function HomeStackScreen() {
-
-
-
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
@@ -28,46 +25,42 @@ function HomeStackScreen() {
         name="HomeScreen"
         component={HomeScreen}
       />
-      <HomeStack.Screen name="SingleProductDetail" component={SingleProductDetail} />
+      <HomeStack.Screen
+        name="SingleProductDetail"
+        component={SingleProductDetail}
+      />
       <HomeStack.Screen name="Login" component={Login} />
       <HomeStack.Screen name="Ragistration" component={Ragistration} />
       <HomeStack.Screen name="AboutPage" component={AboutPage} />
-      <HomeStack.Screen options={{ headerShown: false }} name="CartScreen" component={CartScreen} />
-    
+      <HomeStack.Screen
+        options={{ headerShown: false }}
+        name="CartScreen"
+        component={CartScreen}
+      />
     </HomeStack.Navigator>
-)}
+  );
+}
 
 const StackNavigator = () => {
-
-
-  const dispatch=useDispatch()
-  const count  = useSelector((state) => {
+  const dispatch = useDispatch();
+  const count = useSelector((state) => {
     return state.mySlice.count;
   });
-console.log(count)
-
-
-// const updateCount =(count)=>{
-//   dispatch(getProductCount())
-//   console.log(  dispatch(getProductCount()))
-//   return count
-// }
-  
+  console.log(count);
 
   useEffect(() => {
-    dispatch(getProductCount())
-    // updateCount()
+    dispatch(getProductCount());
   }, [count]);
 
   return (
     <NavigationContainer>
       <Tab.Navigator
         tabBarOptions={{
-          activeTintColor: 'blue', // Change this to your desired active tab color
-          inactiveTintColor: 'gray', // Change this to your desired inactive tab color
+          activeTintColor: "blue", // Change this to your desired active tab color
+          inactiveTintColor: "gray", // Change this to your desired inactive tab color
         }}
         tabBarStyle={{
-          backgroundColor: 'green', // Change this to your desired background color
+          backgroundColor: "green", // Change this to your desired background color
         }}
       >
         <Tab.Screen
@@ -84,7 +77,6 @@ console.log(count)
 
         <Tab.Screen
           options={{
-            
             headerShown: false,
             tabBarLabel: "Cart",
             tabBarBadge: count, // Update the tabBarBadge
@@ -95,9 +87,6 @@ console.log(count)
           name="CartScreen"
           component={CartScreen}
         />
-
-
-        
 
         <Tab.Screen
           options={{
