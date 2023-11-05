@@ -108,10 +108,7 @@ const HomeScreen = ({ navigation }) => {
       return null;
     }
 
-    // if(searchQuery.length>0 && filteredData.length <=0 ){
-    //   return   <Text style={styles.noProducts}>Product not found</Text>
-
-    // }
+   
 
     return (
       <TouchableOpacity
