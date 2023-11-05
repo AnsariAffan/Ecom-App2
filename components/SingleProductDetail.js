@@ -1,59 +1,93 @@
-import { View, Text, Image } from "react-native";
+import { Image, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native";
-import { Card } from "react-native-paper";
-import { ScrollView } from "react-native-web";
+import { Button, Card, Text } from "react-native-paper";
+import StarRating from "./Rating";
+import { useDispatch, useSelector } from "react-redux";
+import { getSingalProduct } from "./api/mySlice";
 
 const SingleProductDetail = ({ route, navigation }) => {
   const { id } = route.params;
 
-  const [data, setData] = useState([]); // Add a state variable to hold the data
+  const dispatch = useDispatch();
+  const product = useSelector((state) => {
+    return state.mySlice.product;
+  });
 
-
-
-
-  const getProductDetails = async (id) => {
-    fetch(`https://fakestoreapi.com/products/${id}`)
-      .then((res) => res.json())
-      .then((e) => {
-        console.log(e);
-        setData([e]); // Store the product details in an array
-      });
-  };
+  console.log(product);
 
   useEffect(() => {
-    getProductDetails(id);
-
+    dispatch(getSingalProduct(id));
   }, [id]);
 
-  const renderData = ({ item }) => (
-
-
-    <Card style={{backgroundColor:"white",height:1000}}>
-    
-       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start' ,marginLeft:10}}>
-    <Image source={{ uri: item.image }} style={{ width: 100, height: 100,padding:100 ,margin:50,resizeMode:"contain",backgroundColor: "transparent"}} />
-    <Text style={{fontSize:20,fontWeight:400}}>{item.title}</Text>
-    <Text style={{fontSize:20,fontWeight:300,}}><Text style={{fontSize:20,fontWeight:400}}>category:</Text> {item.category}</Text>
-    <Text style={{fontSize:20,fontWeight:300}}><Text style={{fontSize:20,fontWeight:400}}>description:</Text>{item.description}</Text>
-    <Text style={{fontSize:20,fontWeight:300}}><Text style={{fontSize:20,fontWeight:400}}>price:</Text>{item.price}</Text>
-    <Text style={{fontSize:20,fontWeight:300}}><Text style={{fontSize:20,fontWeight:400}}>rating:</Text>{item.rating.rate}</Text> 
-  </View>
-  
-    </Card>
-
-  
-  );
-
   return (
-    <View>
-  
-      <FlatList
-        data={data} // Pass the data array to the FlatList
-        renderItem={renderData}
-        keyExtractor={(item) => item.id.toString()} // Add a key extractor
-      />
-    </View>
+    <Card style={{ backgroundColor: "white", height: 1000 }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "space-evenly",
+          margin: 10,
+        }}
+      >
+        <Image
+          source={{ uri: product.image }}
+          style={{
+            width: 100,
+            height: 100,
+            padding: 100,
+            margin: 50,
+            resizeMode: "contain",
+            backgroundColor: "transparent",
+          }}
+        />
+        <Text style={{ fontSize: 20, fontWeight: 400, padding: 5 }}>
+          {product.title}
+        </Text>
+
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: 300,
+            padding: 10,
+            backgroundColor: "lightgray",
+            borderRadius: 10,
+            width: "100%",
+            height: "20",
+          }}
+        >
+          ${product.price}
+        </Text>
+        <Text style={{ fontSize: 20, fontWeight: 300, paddingTop: 5 }}>
+          <Text style={{ fontSize: 20, fontWeight: 400, padding: 5 }}>
+            category:
+          </Text>{" "}
+          {product.category}
+        </Text>
+        <Text style={{ fontSize: 20, fontWeight: 100, padding: 5 }}>
+          Ratings:
+          <StarRating rating={product?.rating?.rate} />
+        </Text>
+
+        <Text style={{ fontSize: 15, fontWeight: 200, padding: 5 }}>
+          {product.description}
+        </Text>
+      </View>
+      <Button
+        mode="contained-tonal"
+        onPress={() => {
+          handleAddToCart(item, navigation);
+        }}
+        style={{
+          margin: 10,
+          backgroundColor: "lightgreen",
+          marginTop: 100,
+          borderRadius: 10,
+          height: "20",
+        }}
+      >
+        Add to cart
+      </Button>
+    </Card>
   );
 };
 

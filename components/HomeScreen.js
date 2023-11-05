@@ -1,210 +1,296 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, Pressable, TouchableOpacity } from 'react-native';
-import { Appbar, Button, Card, Searchbar} from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { Button, Card, Searchbar } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import CartScreen from "./CartScreen";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProducts, getProductsCategory } from "./api/mySlice";
+import axios from "axios";
 
 const HomeScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const products = useSelector((state) => {
+    return state.mySlice.products;
+  });
+  const category = useSelector((state) => {
+    return state.mySlice.category;
+  });
+  const counts = useSelector((state) => {
+    return state.mySlice.counts;
+  });
 
-  
-  const [data, setData] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+
   const [productsFound, setProductsFound] = useState(true);
- const [cart, setCart] = useState([]);
- const [count, setCount] = useState(0);
+  const [cart, setCart] = useState([]);
+  const [count, setCount] = useState(0);
+  const [refresh, setRefresh] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
+  const getDataFromLocalStorage = async () => {
+    const data = await AsyncStorage.getItem("userCart");
+    const convertedData = JSON.parse(data);
+    setCount(convertedData.length);
+  };
 
- const getDataFromLocalStorage = async () => {
-    
-  const data = await AsyncStorage.getItem('userCart');
-  const convertedData = JSON.parse(data);
-  console.log(convertedData.length)
-  setCount(convertedData.length);
-};
+  const nevigateToProductDetailPage = (navigation, id) => {
+    navigation.navigate("SingleProductDetail", { id: id });
+  };
 
-const  nevigateToProductDetailPage=(navigation,id)=>{
-
-  navigation.navigate("SingleProductDetail",{id:id})
-
- }
   const getProductData = async () => {
-    fetch('https://fakestoreapi.com/products')
-      .then((res) => res.json())
-      .then((e) => {
-        setData(e);
-        setFilteredData(e);
-      });
+    setFilteredData(products);
   };
 
   const truncateText = (text, maxLength) => {
     if (text.length > maxLength) {
-      return text.slice(0, maxLength) + '...';
+      return text.slice(0, maxLength) + "...";
     }
     return text;
   };
 
   const handleSearch = (query) => {
-    const filtered = data.filter((item) =>
+    const filtered = products.filter((item) =>
       item.title.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredData(filtered);
     setSearchQuery(query);
     setProductsFound(filtered.length > 0);
   };
-  const handleAddToCart = async (item,navigation) => {
-    // Retrieve existing cart data from local storage
-    let existingCart = await AsyncStorage.getItem('userCart');
 
+  const handleAddToCart = async (item, navigation) => {
+    let existingCart = await AsyncStorage.getItem("userCart");
     if (!existingCart) {
-      // If no existing cart data, initialize an empty array
       existingCart = [];
     } else {
-      // Parse the existing cart data from JSON
       existingCart = JSON.parse(existingCart);
     }
 
-    // Add the selected item to the cart
-    existingCart.push(item);
+    const itemIndex = existingCart.findIndex(
+      (cartItem) => cartItem.id === item.id
+    );
 
-    // Update the cart state
+    if (itemIndex > -1) {
+      window.alert("Item is already added to the cart");
+    } else {
+      existingCart.push(item);
+    }
+
     setCart(existingCart);
 
-    // Store the updated cart data in local storage
-    await AsyncStorage.setItem('userCart', JSON.stringify(existingCart));
+    await AsyncStorage.setItem("userCart", JSON.stringify(existingCart));
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "StackNavigator", params: { data: "Reloaded" } }],
+    });
+    window.alert("Cart added successfully");
 
-    console.log('Product added to cart:', existingCart);
-    navigation.navigate("CartScreen")
-   
+    setRefresh(!refresh);
   };
 
-  
-
   useEffect(() => {
+    dispatch(getAllProducts());
+    dispatch(getProductsCategory());
     getProductData();
-    getDataFromLocalStorage()
-  }, []);
+    getDataFromLocalStorage();
+  }, [count, refresh]);
 
-const renderItem = ({ item }) => (
-  <TouchableOpacity style={{    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-      }} onPress={()=>nevigateToProductDetailPage(navigation,item.id)}>
-  <Card style={styles.card} >
+  const renderItem = ({ item }) => {
+    if (selectedCategory && item.category !== selectedCategory) {
+      return null;
+    }
+
+    // if(searchQuery.length>0 && filteredData.length <=0 ){
+    //   return   <Text style={styles.noProducts}>Product not found</Text>
+
+    // }
+
+    return (
+      <TouchableOpacity
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        onPress={() => nevigateToProductDetailPage(navigation, item.id)}
+      >
+        <Card style={styles.card}>
+          <View style={styles.imageContainer}>
+            <Card.Cover
+              source={{ uri: item.image }}
+              resizeMode="contain"
+              style={{ backgroundColor: "transparent" }}
+            />
+          </View>
+
+          <Card.Content>
+            <Text style={styles.cardTitle}>{truncateText(item.title, 20)}</Text>
+            <Text style={styles.cardPrice}>Price ${item.price}</Text>
+          </Card.Content>
+
+          <Button
+            mode="contained"
+            onPress={() => {
+              handleAddToCart(item, navigation);
+            }}
+            style={{ margin: 10 }}
+          >
+            Add to cart
+          </Button>
+        </Card>
+      </TouchableOpacity>
+    );
+  };
+
+  const showCategory = ({ item }) => {
+    return (
+      <Button
+        mode="contained-tonal"
+        onPress={() => {
+          setSelectedCategory(category === item ? null : item);
+        }}
+        style={{ margin: 2, height: 40 }}
+      >
+        {item}
+      </Button>
+    );
+  };
+
+if(products){ return (
+  <View style={styles.container}>
+    <Searchbar
+      style={{
+        width: "90%",
+        height: 45,
+        margin: 20,
+        backgroundColor: "white",
+      }}
+      placeholder="Search"
+      onChangeText={handleSearch}
+      value={searchQuery}
+    />
+
+    <Text
+      style={{
+        fontSize: 20,
+        fontWeight: "bold",
+        marginTop: 0,
+        marginBottom: 5,
+      }}
+    >
+      Category
+    </Text>
+
+    <ScrollView
+      style={{ width: "100%", top: 120, position: "absolute", zIndex: 3 }}
+    >
+      <FlatList horizontal={true} data={category} renderItem={showCategory} />
+    </ScrollView>
+
+ {/* {searchQuery.length>0 && filteredData.length 0? } */}
+ {searchQuery.length > 0 && filteredData.length == 0 ? 
+  <Text style={styles.noProducts}>Product not found</Text>
+ : <FlatList
+      style={{ marginTop: 66 }}
+      data={filteredData ? filteredData : products}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id.toString()}
+      numColumns={2}
+    />}
     
-    <View style={styles.imageContainer}>
-      <Card.Cover
-        source={{ uri: item.image }}
-        resizeMode="contain"
-        style={{ backgroundColor: "transparent" }}
-      />
-    </View>
-    
-    <Card.Content>
-      <Text style={styles.cardTitle}>{truncateText(item.title,20)}</Text>
-      <Text style={styles.cardPrice}>Price ${item.price}</Text>
-    </Card.Content>
-    {/* <Button title="Add to Cart" onPress={ ()=>{handleAddToCart(item,navigation)}}   >Add To Cart</Button> */}
-   
+  </View>
+)}
 
-    {/* <Button  mode="contained" onPress={ ()=>{handleAddToCart(item,navigation)}} style={{margin:10}}>
-   Add To Cart
-  </Button> */}
-
-  <Button  mode="contained" onPress={ ()=>{handleAddToCart(item,navigation)}} style={{margin:10}}>
-  Buy
-  </Button>
- 
-
-      {/* <Button title="Go to Cart" onPress={() => navigation.navigate('Cart', { cart })} /> */}
-  </Card>
-</TouchableOpacity>
-);
-
-
+else if(filteredData){
   return (
     <View style={styles.container}>
-      <Appbar   >
-
-
-        
-        <View style={styles.searchContainer}>
-        <Searchbar
-      
-         placeholder="Search"
-         onChangeText={handleSearch} // Handle text input changes
-         value={searchQuery}
-         
-         />
-           {/* <View style={{backgroundColor:"orange",height:55}}>
-
-           <Appbar.Action icon="magnify" onPress={() => console.log('Search button pressed') }  />
-
-           </View> */}
-        
-        </View>
-        <Text style={{fontSize:20,position:"relative",top:-19,left:38}}>{count}</Text>
-        <Appbar.Action icon="cart" size={29} onPress={() =>   navigation.navigate("CartScreen")} style={{}}/>
-     
-
-      </Appbar>
-      <Text style={{textAlign:"center",color:"blue",fontSize:25,fontWeight:600}}>Welcome </Text>
-
-      <FlatList
+      <Searchbar
+        style={{
+          width: "90%",
+          height: 45,
+          margin: 20,
+          backgroundColor: "white",
+        }}
+        placeholder="Search"
+        onChangeText={handleSearch}
+        value={searchQuery}
+      />
+  
+      <Text
+        style={{
+          fontSize: 20,
+          fontWeight: "bold",
+          marginTop: 0,
+          marginBottom: 5,
+        }}
+      >
+        Category
+      </Text>
+  
+      <ScrollView
+        style={{ width: "100%", top: 120, position: "absolute", zIndex: 3 }}
+      >
+        <FlatList horizontal={true} data={category} renderItem={showCategory} />
+      </ScrollView>
+  
+   <FlatList
+        style={{ marginTop: 66 }}
         data={filteredData}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         numColumns={2}
-      />
- 
-      {!productsFound && <Text style={styles.noProducts}>Product not found</Text>}
+      /> 
+     
     </View>
-  );
+)}
+
+
+else{
+  <Text style={styles.noProducts}>Product not found</Text>
+}
+
+ 
 };
 
 const styles = StyleSheet.create({
- container: {
+  container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-      
-
+    justifyContent: "center",
+    alignItems: "center",
   },
-   text: {
+  text: {
     fontSize: 24,
     marginBottom: 20,
   },
   card: {
-  
-
     margin: 8,
+    padding: 5,
     flex: 1,
-    backgroundColor:'white'
+    backgroundColor: "white",
   },
   imageContainer: {
-    backgroundColor: 'white', // Set the background color of the image container to transparent
+    backgroundColor: "white",
   },
   cardTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   cardPrice: {
     fontSize: 20,
-    color: 'green',
-    textAlign:'center'
-  },
-  searchContainer:{
-      width:300,
-     
+    color: "green",
+    textAlign: "center",
   },
   noProducts: {
-    flex:1,
-    textAlign: 'center',
+    flex: 1,
+    textAlign: "center",
     fontSize: 20,
-   
-    color: 'blue',
-    fontWeight:'bold',
+    color: "blue",
+    fontWeight: "bold",
+    marginTop:100
   },
 });
 

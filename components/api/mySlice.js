@@ -1,0 +1,132 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+
+export const getAllProducts = createAsyncThunk("api/getAllData", async () => {
+  try {
+    const myData = await axios.get("https://fakestoreapi.com/products");
+    console.log(myData.data)
+    return myData.data;
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+
+export const getProductsCategory = createAsyncThunk("api/getcategories", async () => {
+  try {
+    const myData = await axios.get("https://fakestoreapi.com/products/categories");
+    console.log(myData.data)
+    return myData.data;
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+
+
+export const getSingalProduct = createAsyncThunk("api/getSingalProduct", async (id) => {
+  try {
+    const myData = await axios.get(`https://fakestoreapi.com/products/${id}`);
+    console.log(myData.data)
+    return myData.data;
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+
+export const getProductCount = createAsyncThunk("api/getProductCount", async () => {
+  try {
+    const data = await AsyncStorage.getItem("userCart");
+    const convertedData = JSON.parse(data);
+    return  convertedData.length
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+
+
+
+
+
+
+export const mySlice =createSlice({
+name : "productslice",
+
+initialState:{
+
+product:{},
+products:[],
+loading:false,
+error:null,
+category:[],
+count:0
+
+},
+
+extraReducers:{
+
+
+//for getAllProducts
+[getAllProducts.pending]:(state,action)=>{
+    state.loading = true
+},
+
+[getAllProducts.fulfilled]:(state,{payload})=>{
+    state.products=payload
+    state.loading = false
+},
+
+[getAllProducts.rejected]:(state,{payload})=>{
+    state.loading=false
+    state.error=payload
+},
+
+
+
+//for getProductsCategory
+[getProductsCategory.pending]:(state,action)=>{
+  state.loading = true
+},
+
+[getProductsCategory.fulfilled]:(state,{payload})=>{
+  state.category=payload
+  state.loading = false
+},  
+
+[getProductsCategory.rejected]:(state,{payload})=>{
+  state.loading=false
+  state.error=payload
+},
+
+
+//for getSingalProduct
+[getSingalProduct.pending]:(state,action)=>{
+  state.loading = true
+},
+
+[getSingalProduct.fulfilled]:(state,{payload})=>{
+  state.product=payload
+  state.loading = false
+},  
+
+[getSingalProduct.rejected]:(state,{payload})=>{
+  state.loading=false
+  state.error=payload
+},
+
+// getProductCount
+[getProductCount.fulfilled]:(state,{payload})=>{
+  state.count=payload
+  state.loading = false
+},  
+
+}
+
+})
+
+
+
+export default mySlice.reducer
