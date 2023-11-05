@@ -47,11 +47,16 @@ const StackNavigator = () => {
 console.log(count)
 
 
+// const updateCount =(count)=>{
+//   dispatch(getProductCount())
+//   console.log(  dispatch(getProductCount()))
+//   return count
+// }
   
 
   useEffect(() => {
     dispatch(getProductCount())
-  
+    // updateCount()
   }, [count]);
 
   return (

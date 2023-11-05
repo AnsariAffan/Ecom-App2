@@ -9,10 +9,13 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Appbar, Button, Card } from "react-native-paper";
+import { useDispatch } from "react-redux";
+import { getProductCount } from "./api/mySlice";
 
 const CartScreen = ({ navigation }) => {
   const [productList, setProductList] = useState([]);
   const [refresh, setRefresh] = useState(false);
+  const dispatch = useDispatch();
 
   const getDataFromLocalStorage = async () => {
     const data = await AsyncStorage.getItem("userCart");
@@ -21,6 +24,7 @@ const CartScreen = ({ navigation }) => {
   };
 
   const deleteItems = async (id) => {
+    dispatch(getProductCount())
     console.log("me ander agaya bhai");
     const index = productList.findIndex((item) => item.id === id);
     console.log(index);
@@ -38,7 +42,7 @@ const CartScreen = ({ navigation }) => {
 
   useEffect(() => {
     getDataFromLocalStorage();
-
+    dispatch(getProductCount())
   }, [navigation, refresh]);
 
   return (

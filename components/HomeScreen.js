@@ -12,7 +12,7 @@ import { Button, Card, Searchbar } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CartScreen from "./CartScreen";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProducts, getProductsCategory } from "./api/mySlice";
+import { getAllProducts, getProductCount, getProductsCategory } from "./api/mySlice";
 import axios from "axios";
 
 const HomeScreen = ({ navigation }) => {
@@ -67,6 +67,8 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleAddToCart = async (item, navigation) => {
+    dispatch(getProductCount())
+    console.log(dispatch(getProductCount()))
     let existingCart = await AsyncStorage.getItem("userCart");
     if (!existingCart) {
       existingCart = [];
@@ -97,6 +99,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
+    dispatch(getProductCount())
     dispatch(getAllProducts());
     dispatch(getProductsCategory());
     getProductData();
