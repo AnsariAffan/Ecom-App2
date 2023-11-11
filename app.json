@@ -1,5 +1,17 @@
 {
   "expo": {
+
+    "android": {
+      "googleServicesFile": "./google-services.json"
+    },
+    "ios": {
+      "googleServicesFile": "./GoogleService-Info.plist"
+    },
+    "plugins": [
+     
+    ]
+  ,
+
     "name": "AwesomeProject",
     "slug": "AwesomeProject",
     "version": "1.0.0",

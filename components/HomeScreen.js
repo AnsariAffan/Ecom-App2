@@ -16,8 +16,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts, getProductCount, getProductsCategory } from "./api/mySlice";
 import axios from "axios";
 import { useToast } from "react-native-toast-notifications";
+// import firestore from '@react-native-firebase/firestore';
 
 const HomeScreen = ({ navigation }) => {
+
+
+  // const usersCollection = firestore().collection('userdatabase');
 
  const notification = useToast()
   const dispatch = useDispatch();

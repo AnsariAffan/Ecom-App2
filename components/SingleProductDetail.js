@@ -1,14 +1,24 @@
-import { Image, View } from "react-native";
+import { Image, ScrollView, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native";
 import { Button, Card, Text } from "react-native-paper";
 import StarRating from "./Rating";
 import { useDispatch, useSelector } from "react-redux";
-import { getSingalProduct } from "./api/mySlice";
+import { getProductCount, getSingalProduct } from "./api/mySlice";
+import Dropdown from "./DropdownItem";
+import DropdownItem from "./DropdownItem";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useToast } from "react-native-toast-notifications";
 
 const SingleProductDetail = ({ route, navigation }) => {
-  const { id } = route.params;
 
+ 
+
+  const notification = useToast()
+
+  const [refresh, setRefresh] = useState(false);
+  const { id } = route.params;
+  const [cart, setCart] = useState([]);
   const dispatch = useDispatch();
   const product = useSelector((state) => {
     return state.mySlice.product;
@@ -16,11 +26,52 @@ const SingleProductDetail = ({ route, navigation }) => {
 
   console.log(product);
 
+  const handleAddToCart = async (product, navigation) => {
+    dispatch(getProductCount())
+  
+    console.log(dispatch(getProductCount()))
+    let existingCart = await AsyncStorage.getItem("userCart");
+    if (!existingCart) {
+      existingCart = [];
+    } else {
+      existingCart = JSON.parse(existingCart);
+    }
+
+    const itemIndex = existingCart.findIndex(
+      (cartItem) => cartItem.id === product.id
+    );
+
+    if (itemIndex > -1) {
+      window.alert("Item is already added to the cart");
+    } else {
+      existingCart.push(product);
+      notification.show("Cart added successfully",{
+        type: "normal",
+        placement: "bottom",
+        duration: 2000,
+        offset: 30,
+        animationType: "slide-in",
+      })
+    }
+
+    setCart(existingCart);
+
+    await AsyncStorage.setItem("userCart", JSON.stringify(existingCart));
+    navigation.navigate("CartScreen");
+   
+    setRefresh(!refresh);
+  };
+
+
+
+
   useEffect(() => {
+    dispatch(getProductCount())
     dispatch(getSingalProduct(id));
   }, [id]);
 
   return (
+    <ScrollView>
     <Card style={{ backgroundColor: "white", height: 1000 }}>
       <View
         style={{
@@ -72,10 +123,14 @@ const SingleProductDetail = ({ route, navigation }) => {
           {product.description}
         </Text>
       </View>
+
+
+
+
       <Button
         mode="contained-tonal"
         onPress={() => {
-          handleAddToCart(item, navigation);
+          handleAddToCart(product, navigation);
         }}
         style={{
           margin: 10,
@@ -87,7 +142,12 @@ const SingleProductDetail = ({ route, navigation }) => {
       >
         Add to cart
       </Button>
+
+
+
+
     </Card>
+          </ScrollView>
   );
 };
 
