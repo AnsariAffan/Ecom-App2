@@ -7,10 +7,15 @@ import StackNavigator from './components/StackNavigator';
 import { Provider } from 'react-redux';
 import { ToastProvider } from 'react-native-toast-notifications';
 import store from './components/api/store';
+import { collection, getDocs } from 'firebase/firestore';
+import getCities, { db } from './firebaseConfig';
 
 
 
 const App = () => {
+
+  getCities()
+  console.log(  getCities())
 //tested
   return (
     <Provider store={store}>

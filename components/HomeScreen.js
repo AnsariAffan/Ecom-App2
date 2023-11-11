@@ -16,12 +16,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts, getProductCount, getProductsCategory } from "./api/mySlice";
 import axios from "axios";
 import { useToast } from "react-native-toast-notifications";
-// import firestore from '@react-native-firebase/firestore';
+import { db } from "../firebaseConfig";
+import { collection, getDoc, getDocs } from "firebase/firestore";
+import { getDataFromFireBase, setDataToFireBase } from "./api/firebaseSlice";
+
 
 const HomeScreen = ({ navigation }) => {
 
 
-  // const usersCollection = firestore().collection('userdatabase');
+
+
+
 
  const notification = useToast()
   const dispatch = useDispatch();
@@ -34,6 +39,11 @@ const HomeScreen = ({ navigation }) => {
   const counts = useSelector((state) => {
     return state.mySlice.counts;
   });
+  const userData = useSelector((state) => {
+    return state.firebaseslice.userData;
+  });
+
+  console.log(userData)
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -76,7 +86,7 @@ const HomeScreen = ({ navigation }) => {
 
   const handleAddToCart = async (item, navigation) => {
     dispatch(getProductCount())
-  
+    // dispatch(setDataToFireBase(item))
     console.log(dispatch(getProductCount()))
     let existingCart = await AsyncStorage.getItem("userCart");
     if (!existingCart) {
@@ -118,6 +128,9 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
 
+
+ 
+    dispatch(getDataFromFireBase())
     dispatch(getProductCount())
     dispatch(getAllProducts());
     dispatch(getProductsCategory());
