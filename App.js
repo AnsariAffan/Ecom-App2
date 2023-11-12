@@ -14,9 +14,7 @@ import getCities, { db } from './firebaseConfig';
 
 const App = () => {
 
-  getCities()
-  console.log(  getCities())
-//tested
+
   return (
     <Provider store={store}>
        <ToastProvider>
