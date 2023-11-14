@@ -9,16 +9,18 @@ import {
   ScrollView,
 
 } from "react-native";
-import { Button, Card, Searchbar } from "react-native-paper";
+import { ActivityIndicator, Button, Card, Searchbar } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CartScreen from "./CartScreen";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProducts, getProductCount, getProductsCategory } from "./api/mySlice";
+import { getAllProducts, getProductCount, getProductsCategory, postDataToFireStore } from "./api/mySlice";
 import axios from "axios";
 import { useToast } from "react-native-toast-notifications";
 import { db } from "../firebaseConfig";
 import { collection, getDoc, getDocs } from "firebase/firestore";
 import { getDataFromFireBase, setDataToFireBase } from "./api/firebaseSlice";
+import Loading from "./Loading";
+
 
 
 const HomeScreen = ({ navigation }) => {
@@ -54,6 +56,9 @@ const HomeScreen = ({ navigation }) => {
   const [refresh, setRefresh] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
+
+  const loading= useSelector((state)=>{return state.mySlice.loading})
+
   const getDataFromLocalStorage = async () => {
     const data = await AsyncStorage.getItem("userCart");
     const convertedData = JSON.parse(data);
@@ -85,8 +90,13 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleAddToCart = async (item, navigation) => {
+
+  
+    
     dispatch(getProductCount())
-    // dispatch(setDataToFireBase(item))
+    
+    dispatch(postDataToFireStore(item))
+  
     console.log(dispatch(getProductCount()))
     let existingCart = await AsyncStorage.getItem("userCart");
     if (!existingCart) {
@@ -130,7 +140,7 @@ const HomeScreen = ({ navigation }) => {
 
 
  
-    dispatch(getDataFromFireBase())
+   
     dispatch(getProductCount())
     dispatch(getAllProducts());
     dispatch(getProductsCategory());
@@ -223,8 +233,10 @@ if(products){ return (
     >
       <FlatList horizontal={true} data={category} renderItem={showCategory} />
     </ScrollView>
-
+    
  {/* {searchQuery.length>0 && filteredData.length 0? } */}
+{console.log(loading)}
+ {loading && <ActivityIndicator size="large" color="#00ff00" style={{position:"absolute"}} />}  
  {searchQuery.length > 0 && filteredData.length === 0 ? 
   <Text style={styles.noProducts}>Product not found</Text>
  : <FlatList
@@ -234,7 +246,7 @@ if(products){ return (
       keyExtractor={(item) => item.id.toString()}
       numColumns={2}
     />}
-    
+   
   </View>
 )}
 

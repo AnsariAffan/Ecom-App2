@@ -23,6 +23,7 @@ const Login = () => {
   };
 
   const handleSubmit = async (formData) => {
+
     dispatch(checkLogin(formData));
   };
 
@@ -40,6 +41,7 @@ const Login = () => {
       >
         Login
       </Title>
+
       <TextInput
         placeholder="Email"
         value={formData.email}

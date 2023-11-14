@@ -55,7 +55,7 @@ const StackNavigator = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        tabBarOptions={{
+        screenOptions={{
           activeTintColor: "blue", // Change this to your desired active tab color
           inactiveTintColor: "gray", // Change this to your desired inactive tab color
         }}
@@ -71,7 +71,7 @@ const StackNavigator = () => {
               <FontAwesome5 name="home" color={color} size={size} />
             ),
           }}
-          name="HomeScreen"
+          name="HomeScreens"
           component={HomeStackScreen}
         />
 

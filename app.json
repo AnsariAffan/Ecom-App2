@@ -1,48 +1,60 @@
 {
   "expo": {
-
     "android": {
-      "googleServicesFile": "./google-services.json"
+  
+      "package": "com.mohammadaffan.AwesomeProject",
+      "runtimeVersion": "1.0.0"
     },
-    "ios": {
-      "googleServicesFile": "./GoogleService-Info.plist"
-    },
-    "plugins": [
-     
-    ]
-  ,
-
+   
+    "plugins": [],
     "name": "AwesomeProject",
     "slug": "AwesomeProject",
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+    "env": {
+      "development": {
+        "API_URL": "https://dev.api.example.com"
+      },
+      "production": {
+        "API_URL": "https://api.example.com"
+      },
+      "orientation": "portrait",
+      "icon": "./assets/icon.png",
+      "userInterfaceStyle": "light",
+      "splash": {
+        "image": "./assets/splash.png",
+        "resizeMode": "contain",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anamansari.AwesomeProject"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
+      "assetBundlePatterns": [
+        "**/*"
+      ],
+      "ios": {
+        "supportsTablet": true
+      },
+      "android": {
+        "adaptiveIcon": {
+          "foregroundImage": "./assets/adaptive-icon.png",
+          "backgroundColor": "#ffffff"
+        },
+        "package": "com.anamansari.AwesomeProject"
+      },
+      "web": {
+        "favicon": "./assets/favicon.png"
+      },
+      "extra": {
+        "eas": {
+          "projectId": "bb966810-d268-429e-9677-a727b1c44d09"
+        }
+      }
     },
     "extra": {
       "eas": {
-        "projectId": "bb966810-d268-429e-9677-a727b1c44d09"
+        "projectId": "cb872d55-5877-4c2f-aa23-80fa3493494f"
       }
-    }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/cb872d55-5877-4c2f-aa23-80fa3493494f"
+    },
+    "owner": "mohammadaffan"
   }
 }

@@ -70,7 +70,7 @@ const Ragistration = () => {
         onPress={()=>handleSubmit(formData)}
         style={styles.button}
       >
-        Login
+       Ragistration
       </Button>
     </View>
   );
