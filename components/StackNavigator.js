@@ -22,7 +22,7 @@ function HomeStackScreen() {
     <HomeStack.Navigator>
       <HomeStack.Screen
         options={{ headerShown: false }}
-        name="HomeScreen"
+        name="HomeScreens"
         component={HomeScreen}
       />
       <HomeStack.Screen
@@ -71,7 +71,7 @@ const StackNavigator = () => {
               <FontAwesome5 name="home" color={color} size={size} />
             ),
           }}
-          name="HomeScreens"
+          name="HomeScreen"
           component={HomeStackScreen}
         />
 

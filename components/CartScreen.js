@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPriceCount, getPriceSum, getProductCount, getProductsFromLocalStorages } from "./api/mySlice";
 import { AlertNotificationRoot, Dialog } from "react-native-alert-notification";
 import { Toast, useToast } from "react-native-toast-notifications";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const CartScreen = ({ navigation }) => {
   const [productList, setProductList] = useState([]);
@@ -92,16 +93,16 @@ const CartScreen = ({ navigation }) => {
   }, [navigation, refresh,priceSum]);
 
   return (
-  
+  <SafeAreaView>
     <View style={styles.container}>
       <Appbar>
         <Appbar.Action
           icon="arrow-left"
           onPress={() => {
-            navigation.navigate("HomeScreen");
+            navigation.navigate("HomeScreens");
             navigation.reset({
               index: 0,
-              routes: [{ name: "HomeScreen", params: { data: "Reloaded" } }],
+              routes: [{ name: "HomeScreens", params: { data: "Reloaded" } }],
             });
           }}
         />
@@ -173,7 +174,7 @@ const CartScreen = ({ navigation }) => {
          Purchase Now
         </Button>
     </View>
-   
+    </SafeAreaView>
   );
 };
 

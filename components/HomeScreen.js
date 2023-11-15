@@ -7,8 +7,11 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Dimensions,
+ 
 
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { ActivityIndicator, Button, Card, Searchbar } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CartScreen from "./CartScreen";
@@ -24,10 +27,6 @@ import Loading from "./Loading";
 
 
 const HomeScreen = ({ navigation }) => {
-
-
-
-
 
 
  const notification = useToast()
@@ -55,6 +54,7 @@ const HomeScreen = ({ navigation }) => {
   const [count, setCount] = useState(0);
   const [refresh, setRefresh] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+
 
 
   const loading= useSelector((state)=>{return state.mySlice.loading})
@@ -90,13 +90,11 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleAddToCart = async (item, navigation) => {
+   
+    dispatch(getProductCount()) 
 
-  
-    
-    dispatch(getProductCount())
-    
     dispatch(postDataToFireStore(item))
-  
+
     console.log(dispatch(getProductCount()))
     let existingCart = await AsyncStorage.getItem("userCart");
     if (!existingCart) {
@@ -123,9 +121,10 @@ const HomeScreen = ({ navigation }) => {
     }
 
     setCart(existingCart);
-
+   
     await AsyncStorage.setItem("userCart", JSON.stringify(existingCart));
-    navigation.reset({
+
+    await navigation.reset({
       index: 0,
       routes: [{ name: "StackNavigator", params: { data: "Reloaded" } }],
     });
@@ -138,9 +137,6 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
 
-
- 
-   
     dispatch(getProductCount())
     dispatch(getAllProducts());
     dispatch(getProductsCategory());
@@ -152,24 +148,22 @@ const HomeScreen = ({ navigation }) => {
     if (selectedCategory && item.category !== selectedCategory) {
       return null;
     }
-
-   
-
     return (
+      <SafeAreaView style={{flex: 1}}>
       <TouchableOpacity
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        style={{ }}
         onPress={() => nevigateToProductDetailPage(navigation, item.id)}
       >
     
         <Card style={styles.card}>
           <View style={styles.imageContainer}>
             <Card.Cover
-              source={{ uri: item.image }}
+              source={{ uri: item?.image  }}
               resizeMode="contain"
               style={{ backgroundColor: "transparent" }}
             />
           </View>
-
+ 
           <Card.Content>
             <Text style={styles.cardTitle}>{truncateText(item.title, 20)}</Text>
             <Text style={styles.cardPrice}>Price ${item.price}</Text>
@@ -186,11 +180,13 @@ const HomeScreen = ({ navigation }) => {
           </Button>
         </Card>
       </TouchableOpacity>
+      </SafeAreaView>
     );
   };
 
   const showCategory = ({ item }) => {
     return (
+      <SafeAreaView style={{flex:1}}>
       <Button
         mode="contained-tonal"
         onPress={() => {
@@ -200,16 +196,19 @@ const HomeScreen = ({ navigation }) => {
       >
         {item}
       </Button>
+   </SafeAreaView>
     );
   };
 
-if(products){ return (
+
+ return (
+<SafeAreaView style={{flex:1}}>
   <View style={styles.container}>
     <Searchbar
       style={{
         width: "90%",
-        height: 45,
-        margin: 20,
+        height: 50,
+    
         backgroundColor: "white",
       }}
       placeholder="Search"
@@ -221,26 +220,27 @@ if(products){ return (
       style={{
         fontSize: 20,
         fontWeight: "bold",
-        marginTop: 0,
-        marginBottom: 5,
+   
       }}
     >
       Category
     </Text>
 
     <ScrollView
-      style={{ width: "100%", top: 120, position: "absolute", zIndex: 3 }}
+      style={{flex:1, width: "100%", top: "10%", position: "absolute", zIndex: 3 }}
     >
       <FlatList horizontal={true} data={category} renderItem={showCategory} />
     </ScrollView>
     
  {/* {searchQuery.length>0 && filteredData.length 0? } */}
+
 {console.log(loading)}
+
  {loading && <ActivityIndicator size="large" color="#00ff00" style={{position:"absolute"}} />}  
  {searchQuery.length > 0 && filteredData.length === 0 ? 
   <Text style={styles.noProducts}>Product not found</Text>
  : <FlatList
-      style={{ marginTop: 66 }}
+      style={{ flex:1,marginTop: 65}}
       data={filteredData.length>0 ? filteredData : products}
       renderItem={renderItem}
       keyExtractor={(item) => item.id.toString()}
@@ -248,61 +248,16 @@ if(products){ return (
     />}
    
   </View>
+  </SafeAreaView>
 )}
-
-else if(filteredData){
-  return (
-    <View style={styles.container}>
-      <Searchbar
-        style={{
-          width: "90%",
-          height: 45,
-          margin: 20,
-          backgroundColor: "white",
-        }}
-        placeholder="Search"
-        onChangeText={handleSearch}
-        value={searchQuery}
-      />
-  
-      <Text
-        style={{
-          fontSize: 20,
-          fontWeight: "bold",
-          marginTop: 0,
-          marginBottom: 5,
-        }}
-      >
-        Category
-      </Text>
-  
-      <ScrollView
-        style={{ width: "100%", top: 120, position: "absolute", zIndex: 3 }}
-      >
-        <FlatList horizontal={true} data={category} renderItem={showCategory} />
-      </ScrollView>
-  
-   <FlatList
-        style={{ marginTop: 66 }}
-        data={filteredData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2}
-      /> 
-     
-    </View>
-)}
-
-
-else{
-  <Text style={styles.noProducts}>Product not found</Text>
-}
-
  
-};
+
+const { width, height } = Dimensions.get('window');
+console.log(height)
 
 const styles = StyleSheet.create({
   container: {
+    marginTop:height/50,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -312,16 +267,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   card: {
-    margin: 8,
-    padding: 5,
-    flex: 1,
+    
+    margin: 1,
+    padding: 1,
     backgroundColor: "white",
   },
   imageContainer: {
     backgroundColor: "white",
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 10,
     fontWeight: "bold",
   },
   cardPrice: {
