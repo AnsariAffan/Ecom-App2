@@ -28,6 +28,8 @@ const Login = ({navigation}) => {
   const token = useSelector((state) => {
     return state.firebaseslice.token;
   });
+  
+console.log(token)
 
   const dispatch = useDispatch();
 

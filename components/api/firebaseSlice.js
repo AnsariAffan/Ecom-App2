@@ -80,31 +80,24 @@ export const checkLogin = createAsyncThunk("api/checkLogin", async (data) => {
       data.email,
       data.password
     );
-    const user = userCredential.user;
 
+    const user = userCredential.user;
     console.log("User signed in:", user);
 
-    async function getUserData(userId) {
-      try {
-        const db = getDatabase();
-        const userRef = ref(db,userId);
-        const snapshot = await get(userRef);
+    const db = getDatabase();
+    const userRef = ref(db, user.uid);
+    const snapshot = await get(userRef);
 
-        if (snapshot.exists()) {
-          console.log(snapshot.val())
-          return snapshot.val();
-        } else {
-          console.warn("User data not found in the database");
-          return null;
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error.message);
-        throw error;
-      }
+    if (snapshot.exists()) {
+      console.log(snapshot.val());
+      const token = snapshot.val();
+      return token;
+    } else {
+      console.warn("User data not found in the database");
+      return null;
     }
-    getUserData(user.uid);
 
-    return user; // Return the user object if needed
+    // return user; // Return the user object if needed
   } catch (error) {
     console.error("Error signing in:", error.message);
     throw error;
@@ -142,6 +135,7 @@ export const firebaseslice = createSlice({
     });
     builders.addCase(checkLogin.fulfilled, (state, action) => {
       state.token = action.payload;
+      // console.log(state.token)
       state.loading = false;
     });
     builders.addCase(checkLogin.rejected, (state, action) => {
