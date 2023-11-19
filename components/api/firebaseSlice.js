@@ -42,7 +42,7 @@ export const setDataToFireBase = createAsyncThunk(
         .then(async (userCredential) => {
           // User successfully created
           const user = userCredential.user;
-
+          
           // Store additional user details in the database
           try {
             await writeUserData(user, data);
@@ -96,6 +96,8 @@ export const checkLogin = createAsyncThunk("api/checkLogin", async (data) => {
       console.warn("User data not found in the database");
       return null;
     }
+
+  
 
     // return user; // Return the user object if needed
   } catch (error) {

@@ -9,6 +9,7 @@ import {
 } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { checkLogin, getDataFromFireBase, getLogginUserDeatils } from "./api/firebaseSlice";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const Login = ({navigation}) => {
   const [formData, setFormData] = useState({
@@ -46,6 +47,16 @@ console.log(token)
      navigation.navigate("HomeScreens")
   };
 
+  const auth = getAuth();
+
+useEffect(() => {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+
+      console.log(user)
+    } 
+  });
+}, [auth]);
 
 
   useEffect(() => {

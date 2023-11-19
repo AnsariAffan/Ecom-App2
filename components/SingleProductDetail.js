@@ -75,7 +75,7 @@ const SingleProductDetail = ({ route, navigation }) => {
     <Card style={{ backgroundColor: "white", height: 1000 }}>
       <View
         style={{
-          flex: 1,
+          
           justifyContent: "space-evenly",
           margin: 10,
         }}

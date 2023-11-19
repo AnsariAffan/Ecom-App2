@@ -163,9 +163,8 @@ const loading= useSelector((state)=>{return state.mySlice.loading})
       return null;
     }
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView>
       <TouchableOpacity
-        style={{ }}
         onPress={() => nevigateToProductDetailPage(navigation, item.id)}
       >
     
