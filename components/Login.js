@@ -1,17 +1,33 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
-import { TextInput, Button, Title } from "react-native-paper";
+import {
+  TextInput,
+  Button,
+  Title,
+  ActivityIndicator,
+} from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { checkLogin, getDataFromFireBase } from "./api/firebaseSlice";
+import { checkLogin, getDataFromFireBase, getLogginUserDeatils } from "./api/firebaseSlice";
 
-const Login = () => {
-  
+const Login = ({navigation}) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
+  
+
+  const loading = useSelector((state) => {
+    return state.firebaseslice.loading;
+  });
+
+  const userData = useSelector((state) => {
+    return state.firebaseslice.userData;
+  });
+  const token = useSelector((state) => {
+    return state.firebaseslice.token;
+  });
 
   const dispatch = useDispatch();
 
@@ -21,13 +37,20 @@ const Login = () => {
       [field]: value,
     });
   };
-
+  console.log("testing...............");
   const handleSubmit = async (formData) => {
-
-    dispatch(checkLogin(formData));
+     dispatch(checkLogin(formData));
+    //  dispatch(getLogginUserDeatils(userData,token))
+     navigation.navigate("HomeScreens")
   };
 
-  useEffect(() => {}, []);
+
+
+  useEffect(() => {
+    dispatch(getDataFromFireBase());
+    dispatch(checkLogin(formData));
+ 
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -49,15 +72,16 @@ const Login = () => {
       />
       <TextInput
         placeholder="Password"
-       secureTextEntry
+        secureTextEntry
         value={formData.password}
         onChangeText={(text) => handleInputChange("password", text)}
-
       />
       <Button
         mode="contained"
         onPress={() => handleSubmit(formData)}
         style={styles.button}
+        disabled={loading}
+        loading={loading}
       >
         Login
       </Button>

@@ -4,9 +4,9 @@ import axios from "axios";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 
-export const getAllProducts = createAsyncThunk("api/getAllData", async () => {
+export const getAllProducts =  createAsyncThunk("api/getAllData", async () => {
   try {
-    const myData = await axios.get("https://fakestoreapi.com/products");
+    const myData = await axios("https://fakestoreapi.com/products");
     console.log(myData.data);
     return myData.data;
   } catch (error) {
@@ -197,86 +197,10 @@ export const mySlice = createSlice({
       state.priceCount = payload;
       state.loading = false;
     });
+
+    
   },
 });
 
-
-// extraReducers:{
-
-// //for getAllProducts
-// [getAllProducts.pending]:(state,{payload})=>{
-//     state.loading = true
-// },
-
-// [getAllProducts.fulfilled]:(state,{payload})=>{
-//     state.priceCount=payload.price
-//     state.products=payload
-//     state.loading = false
-// },
-
-// [getAllProducts.rejected]:(state,{payload})=>{
-//     state.loading=false
-//     state.error=payload
-// },
-
-// //for getProductsCategory
-// [getProductsCategory.pending]:(state,{payload})=>{
-//   state.loading = true
-// },
-
-// [getProductsCategory.fulfilled]:(state,{payload})=>{
-//   state.category=payload
-//   state.loading = false
-// },
-
-// [getProductsCategory.rejected]:(state,{payload})=>{
-//   state.loading=false
-//   state.error=payload
-// },
-
-// //for getSingalProduct
-// [getSingalProduct.pending]:(state,{payload})=>{
-//   state.loading = true
-// },
-
-// [getSingalProduct.fulfilled]:(state,{payload})=>{
-//   state.product=payload
-//   state.loading = false
-// },
-
-// [getSingalProduct.rejected]:(state,{payload})=>{
-//   state.loading=false
-//   state.error=payload
-// },
-
-// // getProductCount
-// [getProductCount.fulfilled]:(state,{payload})=>{
-//   state.count=payload
-//   state.loading = false
-// },
-
-// //for getProductsFromLocalStorage
-// [getProductsFromLocalStorages.pending]:(state,{payload})=>{
-//   state.loading = true
-// },
-
-// [getProductsFromLocalStorages.fulfilled]:(state,{payload})=>{
-//   state.userData=payload
-//   state.loading = false
-// },
-
-// [getProductsFromLocalStorages.rejected]:(state,{payload})=>{
-//   state.loading=false
-//   state.error=payload
-// },
-
-// [getPriceSum.fulfilled]:(state,{payload})=>{
-//   state.priceCount=payload
-//   state.error=payload
-// },
-
-// }
-
-// })
 
 export default mySlice.reducer;

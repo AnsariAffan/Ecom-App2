@@ -1,8 +1,23 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { db } from "../../firebaseConfig";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { app, db } from "../../firebaseConfig";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+} from "firebase/firestore";
+import { hash, compare } from "bcryptjs";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { get, getDatabase, ref, set } from "firebase/database";
+
+const auth = getAuth();
 
 export const getDataFromFireBase = createAsyncThunk(
   "api/getDataFromFireBase",
@@ -23,24 +38,35 @@ export const setDataToFireBase = createAsyncThunk(
   "api/setDataToFireBase",
   async (data) => {
     try {
-      const userCollection = collection(db, "userCollection");
-      const readSnapshot = await getDocs(userCollection);
-      const readuserList = readSnapshot.docs.map((doc) => doc.data());
+      createUserWithEmailAndPassword(auth, data.email, data.password)
+        .then(async (userCredential) => {
+          // User successfully created
+          const user = userCredential.user;
 
-      readuserList.forEach((dt) => {
-        if (data.email == dt.email) {
-          console.log("user is already ragistered");
-          window.alert("user is already ragistered");
-        } else {
-          const userSnapshot = addDoc(userCollection, data);
-          const userList = userSnapshot.docs.map((doc) => doc.data());
+          // Store additional user details in the database
+          try {
+            await writeUserData(user, data);
+            console.log("User created:", user);
+          } catch (error) {
+            console.error("Error writing user data:", error.message);
+          }
+        })
+        .catch((error) => {
+          // Handle errors
+          console.error("Error creating user:", error.message);
+        });
 
-          console.log("user is ragistered successfully");
-          window.alert("user is ragistered successfully");
-
-          return userList;
+      async function writeUserData(user, data) {
+        try {
+          const db = getDatabase();
+          const databaseRef = ref(db, user.uid);
+          await set(databaseRef, data);
+          console.log("Data written successfully");
+        } catch (error) {
+          console.error("Error writing user data:", error.message);
+          throw error; // Rethrow the error to be caught by the calling function
         }
-      });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -49,23 +75,39 @@ export const setDataToFireBase = createAsyncThunk(
 
 export const checkLogin = createAsyncThunk("api/checkLogin", async (data) => {
   try {
-    const userCollection = collection(db, "userCollection");
-    const userSnapshot = await getDocs(userCollection);
-    const userList = userSnapshot.docs.map((doc) => doc.data());
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      data.email,
+      data.password
+    );
+    const user = userCredential.user;
 
-    userList.forEach((dt) => {
-      if (data.email == dt.email && data.password == dt.password) {
-        console.log("user logged in successfully");
-        window.alert("user logged in successfully");
-      } else {
-        console.log("incorrect credential");
-        window.alert("incorrect credential");
+    console.log("User signed in:", user);
+
+    async function getUserData(userId) {
+      try {
+        const db = getDatabase();
+        const userRef = ref(db,userId);
+        const snapshot = await get(userRef);
+
+        if (snapshot.exists()) {
+          console.log(snapshot.val())
+          return snapshot.val();
+        } else {
+          console.warn("User data not found in the database");
+          return null;
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error.message);
+        throw error;
       }
-    });
+    }
+    getUserData(user.uid);
 
-    return userList;
+    return user; // Return the user object if needed
   } catch (error) {
-    console.log(error);
+    console.error("Error signing in:", error.message);
+    throw error;
   }
 });
 
@@ -75,36 +117,39 @@ export const firebaseslice = createSlice({
   initialState: {
     userData: [],
     error: null,
+    token: null,
+    loading: false,
+    LogginUser: [],
   },
 
   extraReducers: (builders) => {
-
     builders.addCase(getDataFromFireBase.pending, (state, action) => {
-      state.error = action.payload;
+      state.loading = true;
     });
     builders.addCase(getDataFromFireBase.fulfilled, (state, action) => {
       state.userData = action.payload;
+      state.loading = false;
     });
     builders.addCase(getDataFromFireBase.rejected, (state, action) => {
       // I repeated fulfilled
       state.error = action.payload;
+      state.loading = false;
+    });
+
+    //checkLogin
+    builders.addCase(checkLogin.pending, (state, action) => {
+      state.loading = true;
+    });
+    builders.addCase(checkLogin.fulfilled, (state, action) => {
+      state.token = action.payload;
+      state.loading = false;
+    });
+    builders.addCase(checkLogin.rejected, (state, action) => {
+      // I repeated fulfilled
+      state.error = action.payload;
+      state.loading = false;
     });
   },
-
-  //for getDataFromFireBase
-  // [getDataFromFireBase.pending]:(state,action)=>{
-  //     state.loading = true
-  // },
-
-  // [getDataFromFireBase.fulfilled]:(state,{payload})=>{
-  //     state.userData=payload
-  //     state.loading = false
-  // },
-
-  // [getDataFromFireBase.rejected]:(state,{payload})=>{
-  //     state.loading=false
-  //     state.error=payload
-  // },
 });
 
 export default firebaseslice.reducer;

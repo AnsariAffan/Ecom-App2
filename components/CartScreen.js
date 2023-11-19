@@ -8,6 +8,8 @@ import {
   Pressable,
   TouchableOpacity,
   Alert,
+  Dimensions,
+  ScrollView,
 } from "react-native";
 import { Appbar, Button, Card } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
@@ -93,7 +95,9 @@ const CartScreen = ({ navigation }) => {
   }, [navigation, refresh,priceSum]);
 
   return (
+    <ScrollView>
   <SafeAreaView>
+
     <View style={styles.container}>
       <Appbar>
         <Appbar.Action
@@ -108,11 +112,16 @@ const CartScreen = ({ navigation }) => {
         />
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>My Cart</Text>
       </Appbar>
-
+     
       {count>0 ?
+         
+   
+        
       <FlatList
+
         data={productList}
         renderItem={({ item }) => (
+ 
           <Card
             style={styles.card}
             onPress={() =>
@@ -155,13 +164,14 @@ const CartScreen = ({ navigation }) => {
               </View>
             </Card.Content>
           </Card>
+   
         )}
         keyExtractor={(item, index) => index.toString()}
         numColumns={1}
-      />:  <Text style={styles.noProducts}>Card is empty</Text>
+      />     :  <Text style={styles.noProducts}>Card is empty</Text>
       }
-   
-        <Text style={{fontSize:20,textAlign:"right",paddingRight:10}}>SubTota: {priceCount} </Text>
+ 
+        <Text style={{fontSize:20,textAlign:"right"}}>SubTota: {priceCount} </Text>
    
       <Button
       
@@ -169,14 +179,22 @@ const CartScreen = ({ navigation }) => {
           onPress={() => {
             handleAddToCart(item, navigation);
           }}
-          style={{ margin: 10,backgroundColor:"lightgreen",borderRadius:10,height:"20"  }}
+          style={{ marginTop: height/2.5 ,backgroundColor:"lightgreen",borderRadius:10,height:"20"  }}
         >
          Purchase Now
         </Button>
+   
     </View>
+
     </SafeAreaView>
+    </ScrollView> 
+
   );
 };
+
+
+const { width, height } = Dimensions.get('window');
+console.log(height)
 
 const styles = StyleSheet.create({
   container: {

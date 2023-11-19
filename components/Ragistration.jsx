@@ -17,7 +17,7 @@ const Ragistration = () => {
   const userData = useSelector((state) => {
     return state.firebaseslice.userData;
   });
-
+  const loading= useSelector((state)=>{return state.firebaseslice.loading})
   const dispatch = useDispatch();
 
   const handleInputChange = (field, value) => {
@@ -28,6 +28,7 @@ const Ragistration = () => {
   };
 
   const handleSubmit = async () => {
+    console.log("test")
     dispatch(setDataToFireBase(formData))
   };
 
@@ -66,9 +67,10 @@ const Ragistration = () => {
       />
       <Button
         mode="contained"
-        title="Submit"
         onPress={()=>handleSubmit(formData)}
         style={styles.button}
+        disabled={loading}
+        loading={loading}
       >
        Ragistration
       </Button>

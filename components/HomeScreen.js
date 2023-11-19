@@ -21,9 +21,9 @@ import axios from "axios";
 import { useToast } from "react-native-toast-notifications";
 import { db } from "../firebaseConfig";
 import { collection, getDoc, getDocs } from "firebase/firestore";
-import { getDataFromFireBase, setDataToFireBase } from "./api/firebaseSlice";
+import { getDataFromFireBase, getLogginUserDeatils, setDataToFireBase } from "./api/firebaseSlice";
 import Loading from "./Loading";
-
+import {useNetInfo} from "@react-native-community/netinfo";
 
 
 const HomeScreen = ({ navigation }) => {
@@ -31,6 +31,7 @@ const HomeScreen = ({ navigation }) => {
 
  const notification = useToast()
   const dispatch = useDispatch();
+
   const products = useSelector((state) => {
     return state.mySlice.products;
   });
@@ -43,8 +44,18 @@ const HomeScreen = ({ navigation }) => {
   const userData = useSelector((state) => {
     return state.firebaseslice.userData;
   });
+  const token = useSelector((state) => {
+    return state.firebaseslice.token;
+  });
 
-  console.log(userData)
+
+
+
+
+
+
+
+
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -55,14 +66,17 @@ const HomeScreen = ({ navigation }) => {
   const [refresh, setRefresh] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
+  const netInfo = useNetInfo();
+  console.log("type " + netInfo.type)
+  console.log("Is Connected " + netInfo.isConnected)
 
 
-  const loading= useSelector((state)=>{return state.mySlice.loading})
+const loading= useSelector((state)=>{return state.mySlice.loading})
 
   const getDataFromLocalStorage = async () => {
     const data = await AsyncStorage.getItem("userCart");
     const convertedData = JSON.parse(data);
-    setCount(convertedData.length);
+    setCount(convertedData?.length);
   };
 
   const nevigateToProductDetailPage = (navigation, id) => {
@@ -74,19 +88,19 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const truncateText = (text, maxLength) => {
-    if (text.length > maxLength) {
+    if (text?.length > maxLength) {
       return text.slice(0, maxLength) + "...";
     }
     return text;
   };
 
-  const handleSearch = (query) => {
+  const handleSearch = async (query) => {
     const filtered = products.filter((item) =>
       item.title.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredData(filtered);
     setSearchQuery(query);
-    setProductsFound(filtered.length > 0);
+    setProductsFound(filtered?.length > 0);
   };
 
   const handleAddToCart = async (item, navigation) => {
@@ -136,8 +150,8 @@ const HomeScreen = ({ navigation }) => {
 
 
   useEffect(() => {
-
     dispatch(getProductCount())
+    dispatch(getDataFromFireBase())
     dispatch(getAllProducts());
     dispatch(getProductsCategory());
     getProductData();
@@ -200,10 +214,12 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
-
+ 
  return (
 <SafeAreaView style={{flex:1}}>
+
   <View style={styles.container}>
+
     <Searchbar
       style={{
         width: "90%",
@@ -226,6 +242,7 @@ const HomeScreen = ({ navigation }) => {
       Category
     </Text>
 
+
     <ScrollView
       style={{flex:1, width: "100%", top: "10%", position: "absolute", zIndex: 3 }}
     >
@@ -237,11 +254,11 @@ const HomeScreen = ({ navigation }) => {
 {console.log(loading)}
 
  {loading && <ActivityIndicator size="large" color="#00ff00" style={{position:"absolute"}} />}  
- {searchQuery.length > 0 && filteredData.length === 0 ? 
+ {searchQuery?.length > 0 && filteredData?.length === 0 ? 
   <Text style={styles.noProducts}>Product not found</Text>
  : <FlatList
       style={{ flex:1,marginTop: 65}}
-      data={filteredData.length>0 ? filteredData : products}
+      data={filteredData?.length>0 ? filteredData : products}
       renderItem={renderItem}
       keyExtractor={(item) => item.id.toString()}
       numColumns={2}
