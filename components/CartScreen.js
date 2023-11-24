@@ -13,7 +13,12 @@ import {
 } from "react-native";
 import { Appbar, Button, Card } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { getPriceCount, getPriceSum, getProductCount, getProductsFromLocalStorages } from "./api/mySlice";
+import {
+  getPriceCount,
+  getPriceSum,
+  getProductCount,
+  getProductsFromLocalStorages,
+} from "./api/mySlice";
 import { AlertNotificationRoot, Dialog } from "react-native-alert-notification";
 import { Toast, useToast } from "react-native-toast-notifications";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -23,27 +28,28 @@ const CartScreen = ({ navigation }) => {
   const [priceSum, setpriceSum] = useState();
   const [refresh, setRefresh] = useState(false);
   const dispatch = useDispatch();
-  const notification = useToast()
-  const count= useSelector((state)=>{return state.mySlice.count})
+  const notification = useToast();
+  const count = useSelector((state) => {
+    return state.mySlice.count;
+  });
   const priceCount = useSelector((state) => {
     return state.mySlice.priceCount;
   });
-  
-  console.log(priceCount)
-// const getSumOfPrice=()=>{
 
+  console.log(priceCount);
+  // const getSumOfPrice=()=>{
 
-//   // create a variable for the sum and initialize it
-//   let sum = 0;
-  
-//   // iterate over each item in the array
-//   for (let i = 0; i < userData.length; i++ ) {
-//     sum += userData[i].price;
-//   }
-  
-//   console.log(sum) // 15
+  //   // create a variable for the sum and initialize it
+  //   let sum = 0;
 
-// }
+  //   // iterate over each item in the array
+  //   for (let i = 0; i < userData.length; i++ ) {
+  //     sum += userData[i].price;
+  //   }
+
+  //   console.log(sum) // 15
+
+  // }
 
   const getDataFromLocalStorage = async () => {
     const data = await AsyncStorage.getItem("userCart");
@@ -51,14 +57,11 @@ const CartScreen = ({ navigation }) => {
     setProductList(convertedData);
   };
 
-
-
-
   const deleteItems = async (id) => {
     // showNotificationDailogBox()
-    dispatch(getPriceSum())
-    dispatch(getProductCount())
-  
+    dispatch(getPriceSum());
+    dispatch(getProductCount());
+
     console.log("me ander agaya bhai");
     const index = productList.findIndex((item) => item.id === id);
     console.log(index);
@@ -68,133 +71,128 @@ const CartScreen = ({ navigation }) => {
       console.log(productList);
       await AsyncStorage.setItem("userCart", JSON.stringify(productList));
       console.log("mil gaya bhai");
-     
+
       setRefresh(!refresh);
     }
 
-    notification.show("Item deleted successfully",{
+    notification.show("Item deleted successfully", {
       type: "danger",
       placement: "bottom",
       duration: 3000,
       offset: 30,
       animationType: "slide-in",
-    })
+    });
     console.log("nhi mila bhai");
   };
 
-
-
-
-
   useEffect(() => {
     // getSumOfPrice()
-    dispatch(getPriceSum())
-   dispatch(getProductsFromLocalStorages())
+    dispatch(getPriceSum());
+    dispatch(getProductsFromLocalStorages());
     getDataFromLocalStorage();
-    dispatch(getProductCount())
-  }, [navigation, refresh,priceSum]);
+    dispatch(getProductCount());
+  }, [navigation, refresh, priceSum]);
 
   return (
     <ScrollView>
-  <SafeAreaView>
+      <SafeAreaView>
+        <View style={styles.container}>
+          <Appbar>
+            <Appbar.Action
+              icon="arrow-left"
+              onPress={() => {
+                navigation.navigate("HomeScreens");
+                navigation.reset({
+                  index: 0,
+                  routes: [
+                    { name: "HomeScreens", params: { data: "Reloaded" } },
+                  ],
+                });
+              }}
+            />
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>My Cart</Text>
+          </Appbar>
 
-    <View style={styles.container}>
-      <Appbar>
-        <Appbar.Action
-          icon="arrow-left"
-          onPress={() => {
-            navigation.navigate("HomeScreens");
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "HomeScreens", params: { data: "Reloaded" } }],
-            });
-          }}
-        />
-        <Text style={{ fontSize: 20, fontWeight: "bold" }}>My Cart</Text>
-      </Appbar>
-     
-      {count>0 ?
-         
-   
-        
-      <FlatList
+          {count > 0 ? (
+            <FlatList
+              data={productList}
+              renderItem={({ item }) => (
+                <Card
+                  style={styles.card}
+                  onPress={() =>
+                    navigation.navigate("SingleProductDetail", { id: item.id })
+                  }
+                >
+                  <Card.Content>
+                    <View style={{ display: "flex", flexDirection: "row" }}>
+                      <Card.Cover
+                        source={{ uri: item.image }}
+                        resizeMode="contain"
+                        style={{
+                          backgroundColor: "transparent",
+                          height: 50,
+                          width: 50,
+                        }}
+                      />
+                      <Text style={styles.cardTitle}>{item.title}</Text>
+                    </View>
 
-        data={productList}
-        renderItem={({ item }) => (
- 
-          <Card
-            style={styles.card}
-            onPress={() =>
-              navigation.navigate("SingleProductDetail", { id: item.id })
-            }
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      <Text style={styles.cardPrice}>price ${item.price}</Text>
+                      <TouchableOpacity onPress={() => deleteItems(item.id)}>
+                        <Card.Cover
+                          source={require("../assets/DeleteButtonIcon.png")}
+                          resizeMode="contain"
+                          style={{
+                            backgroundColor: "transparent",
+                            height: 35,
+                            width: 35,
+                          }}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </Card.Content>
+                </Card>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              numColumns={1}
+            />
+          ) : (
+            <Text style={styles.noProducts}>Card is empty</Text>
+          )}
+
+          <Text style={{ fontSize: 20, textAlign: "right" }}>
+            SubTota: {priceCount}{" "}
+          </Text>
+
+          <Button
+            mode="contained-tonal"
+            onPress={() => {
+              handleAddToCart(item, navigation);
+            }}
+            style={{
+              marginTop: height / 2.5,
+              backgroundColor: "lightgreen",
+              borderRadius: 10,
+              height: "20",
+            }}
           >
-            <Card.Content>
-              <View style={{ display: "flex", flexDirection: "row" }}>
-                <Card.Cover
-                  source={{ uri: item.image }}
-                  resizeMode="contain"
-                  style={{
-                    backgroundColor: "transparent",
-                    height: 50,
-                    width: 50,
-                  }}
-                />
-                <Text style={styles.cardTitle}>{item.title}</Text>
-              </View>
-
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <Text style={styles.cardPrice}>price ${item.price}</Text>
-                <TouchableOpacity onPress={() => deleteItems(item.id)}>
-                  <Card.Cover
-                    source={require("../assets/DeleteButtonIcon.png")}
-                    resizeMode="contain"
-                    style={{
-                      backgroundColor: "transparent",
-                      height: 35,
-                      width: 35,
-                    }}
-                  />
-                </TouchableOpacity>
-              </View>
-            </Card.Content>
-          </Card>
-   
-        )}
-        keyExtractor={(item, index) => index.toString()}
-        numColumns={1}
-      />     :  <Text style={styles.noProducts}>Card is empty</Text>
-      }
- 
-        <Text style={{fontSize:20,textAlign:"right"}}>SubTota: {priceCount} </Text>
-   
-      <Button
-      
-          mode="contained-tonal"
-          onPress={() => {
-            handleAddToCart(item, navigation);
-          }}
-          style={{ marginTop: height/2.5 ,backgroundColor:"lightgreen",borderRadius:10,height:"20"  }}
-        >
-         Purchase Now
-        </Button>
-   
-    </View>
-
-    </SafeAreaView>
-    </ScrollView> 
-
+            Purchase Now
+          </Button>
+        </View>
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 
-
-const { width, height } = Dimensions.get('window');
-console.log(height)
+const { width, height } = Dimensions.get("window");
+console.log(height);
 
 const styles = StyleSheet.create({
   container: {
@@ -221,7 +219,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "blue",
     fontWeight: "bold",
-    marginTop:100
+    marginTop: 100,
   },
 });
 

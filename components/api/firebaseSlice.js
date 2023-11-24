@@ -47,12 +47,15 @@ export const setDataToFireBase = createAsyncThunk(
           try {
             await writeUserData(user, data);
             console.log("User created:", user);
+            window.alert("User logged in successfully")
           } catch (error) {
             console.error("Error writing user data:", error.message);
+     
           }
         })
         .catch((error) => {
           // Handle errors
+         
           console.error("Error creating user:", error.message);
         });
 
@@ -91,9 +94,12 @@ export const checkLogin = createAsyncThunk("api/checkLogin", async (data) => {
     if (snapshot.exists()) {
       console.log(snapshot.val());
       const token = snapshot.val();
+      window.alert("logged in successfully")
       return token;
     } else {
+     
       console.warn("User data not found in the database");
+
       return null;
     }
 
@@ -101,6 +107,7 @@ export const checkLogin = createAsyncThunk("api/checkLogin", async (data) => {
 
     // return user; // Return the user object if needed
   } catch (error) {
+    window.alert("incorrect credential")
     console.error("Error signing in:", error.message);
     throw error;
   }
