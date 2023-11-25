@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
 } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { checkLogin, getDataFromFireBase, getLogginUserDeatils } from "./api/firebaseSlice";
+import { checkLogin, getDataFromFireBase, getLogginUserDeatils, userLogin, userSignout } from "./api/firebaseSlice";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const Login = ({navigation}) => {
@@ -41,32 +41,43 @@ console.log(token)
     });
   };
   console.log("testing...............");
+  
   const handleSubmit = async (formData) => {
-     dispatch(checkLogin(formData));
+  dispatch(userLogin(formData))
+
+    //  dispatch(checkLogin(formData));
     //  dispatch(getLogginUserDeatils(userData,token))
-     navigation.navigate("HomeScreens")
+    //  navigation.navigate("HomeScreens")
   };
+  
+  const handleSignout = async ()=>{
+    dispatch(userSignout())
+    console.log("handleSignout")
+  }
 
   const auth = getAuth();
 
 useEffect(() => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
+  // onAuthStateChanged(auth, (user) => {
+  //   if (user) {
 
-      console.log(user)
-    } 
-  });
-}, [auth]);
+  //     console.log(user)
+  //   } 
+  // });
+}, []);
 
 
   useEffect(() => {
     dispatch(getDataFromFireBase());
-    dispatch(checkLogin(formData));
+    // dispatch(checkLogin(formData));
  
   }, []);
 
   return (
     <View style={styles.container}>
+
+      {token? "User name": "no user is loggin"}
+
       <Title
         style={{
           textAlign: "center",
@@ -97,6 +108,15 @@ useEffect(() => {
         loading={loading}
       >
         Login
+      </Button>
+      <Button
+        mode="contained"
+        onPress={() => handleSignout()}
+        style={styles.button}
+        disabled={loading}
+        loading={loading}
+      >
+        Sign out
       </Button>
     </View>
   );

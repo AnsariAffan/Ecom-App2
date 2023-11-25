@@ -72,7 +72,7 @@ const SingleProductDetail = ({ route, navigation }) => {
 
   return (
     <ScrollView>
-    <Card style={{ backgroundColor: "white", height: 1000 }}>
+    <Card style={{ backgroundColor: "white", }}>
       <View
         style={{
           

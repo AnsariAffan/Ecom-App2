@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { TextInput, Button, Title } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { getDataFromFireBase, setDataToFireBase } from "./api/firebaseSlice";
+import { getDataFromFireBase, setDataToFireBase, userRagistration } from "./api/firebaseSlice";
 import { useEffect } from "react";
 
 const Ragistration = () => {
@@ -29,7 +29,8 @@ const Ragistration = () => {
 
   const handleSubmit = async () => {
     console.log("test")
-    dispatch(setDataToFireBase(formData))
+    // dispatch(setDataToFireBase(formData))
+    dispatch(userRagistration(formData))
   };
 
   useEffect(() => {
