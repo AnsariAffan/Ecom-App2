@@ -29,7 +29,6 @@ const Ragistration = () => {
 
   const handleSubmit = async () => {
     console.log("test")
-    // dispatch(setDataToFireBase(formData))
     dispatch(userRagistration(formData))
   };
 
