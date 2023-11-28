@@ -85,6 +85,13 @@ const CartScreen = ({ navigation }) => {
     console.log("nhi mila bhai");
   };
 
+  //  const truncateText = (text, maxLength) => {
+  //   if (text?.length > maxLength) {
+  //     return text.slice(0, maxLength) + "...";
+  //   }
+  //   return text;
+  // };
+
   useEffect(() => {
     // getSumOfPrice()
     dispatch(getPriceSum());
@@ -177,7 +184,7 @@ const CartScreen = ({ navigation }) => {
               handleAddToCart(item, navigation);
             }}
             style={{
-              marginTop: height / 2.5,
+              marginTop: 0,
               backgroundColor: "lightgreen",
               borderRadius: 10,
               height: "20",
