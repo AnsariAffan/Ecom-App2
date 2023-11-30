@@ -9,6 +9,9 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useIsFocused } from "@react-navigation/native";
 
+import Paypal from "./Paypal";
+
+
 const Settings = ({ navigation }) => {
 
   const dispatch = useDispatch();
@@ -81,6 +84,9 @@ const Settings = ({ navigation }) => {
         Sign out
       </Button>
       )}
+
+
+<Paypal/>
 
 
 

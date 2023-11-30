@@ -22,6 +22,7 @@ import {
 import { AlertNotificationRoot, Dialog } from "react-native-alert-notification";
 import { Toast, useToast } from "react-native-toast-notifications";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Paypal from "./Paypal";
 
 const CartScreen = ({ navigation }) => {
   const [productList, setProductList] = useState([]);
@@ -192,6 +193,7 @@ const CartScreen = ({ navigation }) => {
           >
             Purchase Now
           </Button>
+          <Paypal/>
         </View>
       </SafeAreaView>
     </ScrollView>

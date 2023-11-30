@@ -1,0 +1,112 @@
+API credentials
+App name
+Ecom-App
+
+Client ID
+Adid4BLWYFKUbifiZywRifn381twtPLPECBFjiji
+WMV2a6911lbnhetHvZQvrr2VW912HQomm-fg2qGo
+
+Secret key 1
+EM6UXQPSZGVn4lBPpNTEO1K4WEER21t6sJXibVV0uF8uEK_AzlzazYadfvjRKFOuT6u0z9dckT5dDqxo
+
+
+Sandbox URL
+https://sandbox.paypal.com
+
+Sandbox Region
+US
+Email
+sb-4mujf20579010@business.example.com
+
+
+
+
+
+-------------------------------------------------------
+personal Account details
+
+Sandbox URL
+https://sandbox.paypal.com
+
+Email
+sb-rrqzj28443812@personal.example.com
+
+Password
+test@123
+
+
+
+Name
+John Doe
+
+Phone
+4088999253
+Account type
+Personal
+Account ID
+RJMTQJBHMNGK8
+Status
+Verified
+Country
+US
+PayPal balance
+USD 5,000.00
+
+Bank account number
+8715822221
+Bank routing number
+325272063
+Credit card number
+4032036890284407
+Credit card type
+VISA
+Expiration date
+12/2028
+
+
+------------------------------------------------
+Business Account
+
+Sandbox URL
+https://sandbox.paypal.com
+
+Email
+sb-4mujf20579010@business.example.com
+
+Username
+sb-4mujf20579010_api1.business.example.com
+
+Password
+49YFAFSD66NGE793
+
+Signature
+AFiIkEzD40qj48VPD7qPDM6cS5xUAaknTQRz2jGbELhLUGrAUIkwiXrk
+
+
+Name
+John Doe
+
+Phone
+4086842052
+Account type
+Business
+Upgrade to Pro
+Account ID
+7FZEAJW95UT58
+Status
+Verified
+Country
+US
+PayPal balance
+USD 5,000.00
+
+Bank account number
+3157579275
+Bank routing number
+325272063
+Credit card number
+4032037960052294
+Credit card type
+VISA
+Expiration date
+09/2027

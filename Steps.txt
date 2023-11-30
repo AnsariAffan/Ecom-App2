@@ -1,0 +1,7 @@
+Steps:
+1.Generate access token key
+require 
+client id & secret key
+
+
+2.Install react nato=ive web view & base64
