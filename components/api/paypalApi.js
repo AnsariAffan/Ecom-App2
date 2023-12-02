@@ -17,17 +17,17 @@ let orderDetail = {
                     "quantity": "1",
                     "unit_amount": {
                         "currency_code": "USD",
-                        "value": "200.00"
+                        "value": "800.00"
                     }
                 }
             ],
             "amount": {
                 "currency_code": "USD",
-                "value": "200.00",
+                "value": "800.00",
                 "breakdown": {
                     "item_total": {
                         "currency_code": "USD",
-                        "value": "200.00"
+                        "value": "800.00"
                     }
                 }
             }

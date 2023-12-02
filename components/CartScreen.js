@@ -94,42 +94,25 @@ const CartScreen = ({ navigation }) => {
   //   return text;
   // };
 
-  const onUrlChange = (webviewState) => {
-    console.log("webviewStatewebviewState", webviewState)
-    if (webviewState.url.includes('https://example.com/cancel')) {
-        clearPaypalState()
-        return;
-    }
-    if (webviewState.url.includes('https://example.com/return')) {
+//   const onUrlChange = (webviewState) => {
+//     console.log("webviewStatewebviewState", webviewState)
+//     if (webviewState.url.includes('https://example.com/cancel')) {
+//         clearPaypalState()
+//         return;
+//     }
+//     if (webviewState.url.includes('https://example.com/return')) {
 
-        const urlValues = queryString.parseUrl(webviewState.url)
-        console.log("my urls value", urlValues)
-        const { token } = urlValues.query
-        if (!!token) {
-            paymentSucess(token)
-        }
+//         const urlValues = queryString.parseUrl(webviewState.url)
+//         console.log("my urls value", urlValues)
+//         const { token } = urlValues.query
+//         if (!!token) {
+//             paymentSucess(token)
+//         }
 
-    }
-}
+//     }
+// }
 
-  const handleAddToCart = async (navigate) => {
-    console.log("test button handleAddToCart ");
-    const token = await ppl.generateToken();
-    console.log(token);
-    const order = await ppl.createOrder(token);
-
-    console.log(order);
-   
-    if (!!order?.links) {
-      const { id } = order;
-      const findUrl = order.links.find((data) => data?.rel == "approve");
-      console.log(findUrl.href);
-      const payment = await ppl.capturePayment(id, token);
-      console.log(payment);
-      navigate.navigate("Paypal",{uri:findUrl.href,onUrlChange});
-    }
-  };
-
+  
 
 
 
@@ -219,21 +202,9 @@ const CartScreen = ({ navigation }) => {
             SubTota: {priceCount}{" "}
           </Text>
 
-          <Button
-            mode="contained-tonal"
-            onPress={() => {
-              handleAddToCart(navigation);
-            }}
-            style={{
-              marginTop: 0,
-              backgroundColor: "lightgreen",
-              borderRadius: 10,
-              height: "20",
-            }}
-          >
-            Purchase Now
-          </Button>
-          {/* <Paypal/> */}
+          
+          <Paypal/> 
+
         </View>
       </SafeAreaView>
     </ScrollView>
