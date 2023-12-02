@@ -23,6 +23,7 @@ import { AlertNotificationRoot, Dialog } from "react-native-alert-notification";
 import { Toast, useToast } from "react-native-toast-notifications";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Paypal from "./Paypal";
+import ppl from "./api/paypalApi";
 
 const CartScreen = ({ navigation }) => {
   const [productList, setProductList] = useState([]);
@@ -92,6 +93,45 @@ const CartScreen = ({ navigation }) => {
   //   }
   //   return text;
   // };
+
+  const onUrlChange = (webviewState) => {
+    console.log("webviewStatewebviewState", webviewState)
+    if (webviewState.url.includes('https://example.com/cancel')) {
+        clearPaypalState()
+        return;
+    }
+    if (webviewState.url.includes('https://example.com/return')) {
+
+        const urlValues = queryString.parseUrl(webviewState.url)
+        console.log("my urls value", urlValues)
+        const { token } = urlValues.query
+        if (!!token) {
+            paymentSucess(token)
+        }
+
+    }
+}
+
+  const handleAddToCart = async (navigate) => {
+    console.log("test button handleAddToCart ");
+    const token = await ppl.generateToken();
+    console.log(token);
+    const order = await ppl.createOrder(token);
+
+    console.log(order);
+   
+    if (!!order?.links) {
+      const { id } = order;
+      const findUrl = order.links.find((data) => data?.rel == "approve");
+      console.log(findUrl.href);
+      const payment = await ppl.capturePayment(id, token);
+      console.log(payment);
+      navigate.navigate("Paypal",{uri:findUrl.href,onUrlChange});
+    }
+  };
+
+
+
 
   useEffect(() => {
     // getSumOfPrice()
@@ -182,7 +222,7 @@ const CartScreen = ({ navigation }) => {
           <Button
             mode="contained-tonal"
             onPress={() => {
-              handleAddToCart(item, navigation);
+              handleAddToCart(navigation);
             }}
             style={{
               marginTop: 0,
@@ -193,7 +233,7 @@ const CartScreen = ({ navigation }) => {
           >
             Purchase Now
           </Button>
-          <Paypal/>
+          {/* <Paypal/> */}
         </View>
       </SafeAreaView>
     </ScrollView>

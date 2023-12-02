@@ -13,6 +13,7 @@ import CartScreen from "./CartScreen";
 import HomeScreen from "./HomeScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { getProductCount } from "./api/mySlice";
+import Paypal from "./Paypal";
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -33,6 +34,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Login" component={Login} />
       <HomeStack.Screen name="Ragistration" component={Ragistration} />
       <HomeStack.Screen name="AboutPage" component={AboutPage} />
+      <HomeStack.Screen  name="Paypal" component={Paypal} />
       <HomeStack.Screen
         options={{ headerShown: false }}
         name="CartScreen"

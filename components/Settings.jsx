@@ -46,7 +46,7 @@ const Settings = ({ navigation }) => {
   return (
     <View style={styles.container}>
 
-<List.Item
+      <List.Item
         onPress={() => navigation.navigate("AboutPage")}
         style={{ borderWidth: 1, borderRadius: 6, padding: 6, margin: 10 }}
         title="About"
@@ -55,7 +55,7 @@ const Settings = ({ navigation }) => {
 
       {user == null ? (
         <>
-          {" "}
+         
           <List.Item
             onPress={() => navigation.navigate("Login")}
             style={{ borderWidth: 1, borderRadius: 6, padding: 6, margin: 10 }}
@@ -84,9 +84,9 @@ const Settings = ({ navigation }) => {
         Sign out
       </Button>
       )}
+{/* 
 
-
-<Paypal/>
+<Paypal/> */}
 
 
 
