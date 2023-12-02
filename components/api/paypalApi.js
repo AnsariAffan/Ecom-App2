@@ -6,38 +6,38 @@ const base64 = require('base-64');
 let clientId = 'Adid4BLWYFKUbifiZywRifn381twtPLPECBFjijiWMV2a6911lbnhetHvZQvrr2VW912HQomm-fg2qGo';
 let secretKey = 'EM6UXQPSZGVn4lBPpNTEO1K4WEER21t6sJXibVV0uF8uEK_AzlzazYadfvjRKFOuT6u0z9dckT5dDqxo';
 
-let orderDetail = {
-    "intent": "CAPTURE",
-    "purchase_units": [
-        {
-            "items": [
-                {
-                    "name": "T-Shirt",
-                    "description": "Green XL",
-                    "quantity": "1",
-                    "unit_amount": {
-                        "currency_code": "USD",
-                        "value": "800.00"
-                    }
-                }
-            ],
-            "amount": {
-                "currency_code": "USD",
-                "value": "800.00",
-                "breakdown": {
-                    "item_total": {
-                        "currency_code": "USD",
-                        "value": "800.00"
-                    }
-                }
-            }
-        }
-    ],
-    "application_context": {
-        "return_url": "https://example.com/return",
-        "cancel_url": "https://example.com/cancel"
-    }
-}
+// let orderDetail = {
+//     "intent": "CAPTURE",
+//     "purchase_units": [
+//         {
+//             "items": [
+//                 {
+//                     "name": "T-Shirt",
+//                     "description": "Green XL",
+//                     "quantity": "1",
+//                     "unit_amount": {
+//                         "currency_code": "USD",
+//                         "value": "800.00"
+//                     }
+//                 }
+//             ],
+//             "amount": {
+//                 "currency_code": "USD",
+//                 "value": "800.00",
+//                 "breakdown": {
+//                     "item_total": {
+//                         "currency_code": "USD",
+//                         "value": "800.00"
+//                     }
+//                 }
+//             }
+//         }
+//     ],
+//     "application_context": {
+//         "return_url": "https://example.com/return",
+//         "cancel_url": "https://example.com/cancel"
+//     }
+// }
 
 
 const generateToken = () => {
@@ -67,7 +67,7 @@ const generateToken = () => {
 
 }
 
-const createOrder = (token = '') => {
+const createOrder = (token = '',orderDetail) => {
     var requestOptions = {
         method: 'POST',
         headers: {

@@ -9,6 +9,8 @@ import Dropdown from "./DropdownItem";
 import DropdownItem from "./DropdownItem";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useToast } from "react-native-toast-notifications";
+import Paypal from "./Paypal";
+
 
 const SingleProductDetail = ({ route, navigation }) => {
 
@@ -142,10 +144,10 @@ const SingleProductDetail = ({ route, navigation }) => {
       >
         Add to cart
       </Button>
+     
 
 
-
-
+      <Paypal productID={id}/>
     </Card>
           </ScrollView>
   );
