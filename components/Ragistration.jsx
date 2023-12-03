@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDataFromFireBase, setDataToFireBase, userRagistration } from "./api/firebaseSlice";
 import { useEffect } from "react";
 
-const Ragistration = () => {
+const Ragistration = ({navigation}) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -37,7 +37,9 @@ const Ragistration = () => {
   }, []);
 
   return (
+ 
     <View style={styles.container}>
+      
       <Title
         style={{
           textAlign: "center",

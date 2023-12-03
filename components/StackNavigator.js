@@ -35,11 +35,12 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Ragistration" component={Ragistration} />
       <HomeStack.Screen name="AboutPage" component={AboutPage} />
       <HomeStack.Screen  name="Paypal" component={Paypal} />
-      <HomeStack.Screen
-        options={{ headerShown: false }}
+      {/* <HomeStack.Screen
+        // options={{ headerShown: true  }}
         name="CartScreen"
         component={CartScreen}
-      />
+        
+      /> */}
     </HomeStack.Navigator>
   );
 }
@@ -80,7 +81,8 @@ const StackNavigator = () => {
 
         <Tab.Screen
           options={{
-            headerShown: false,
+            headerShown: true,
+            
             tabBarLabel: "Cart",
             tabBarBadge: count, // Update the tabBarBadge
             tabBarIcon: ({ color, size }) => (

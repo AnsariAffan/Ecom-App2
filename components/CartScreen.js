@@ -122,13 +122,13 @@ const CartScreen = ({ navigation }) => {
     dispatch(getProductsFromLocalStorages());
     getDataFromLocalStorage();
     dispatch(getProductCount());
-  }, [navigation, refresh, priceSum]);
+  }, [navigation, refresh, priceSum,priceCount]);
 
   return (
     <ScrollView>
       <SafeAreaView>
         <View style={styles.container}>
-          <Appbar>
+          {/* <Appbar>
             <Appbar.Action
               icon="arrow-left"
               onPress={() => {
@@ -142,7 +142,7 @@ const CartScreen = ({ navigation }) => {
               }}
             />
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>My Cart</Text>
-          </Appbar>
+          </Appbar> */}
 
           {count > 0 ? (
             <FlatList

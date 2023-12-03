@@ -46,6 +46,7 @@ export const userRagistration = createAsyncThunk(
           const user = userCredential.user;
           console.log(user);
           window.alert("user ragistered successfully");
+         
           // ...
         })
         .catch((error) => {
@@ -70,6 +71,7 @@ export const userLogin = createAsyncThunk("api/userLogin", async (data) => {
 
       console.log(user);
       window.alert("user logged in successfully");
+ 
       return user;
     })
     .catch((error) => {
@@ -89,6 +91,7 @@ export const userSignout = createAsyncThunk("api/userSignout", async (auth) => {
         console.log("Sign-out successful");
         console.log(auth);
         window.alert("Sign-out successful");
+      
       })
       .catch((error) => {
         // An error happened.

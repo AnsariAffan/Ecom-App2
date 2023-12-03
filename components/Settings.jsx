@@ -16,10 +16,10 @@ const Settings = ({ navigation }) => {
 
   const dispatch = useDispatch();
 
-  const handleSignout = async () => {
+  const handleSignout = async (navigation) => {
     dispatch(userSignout());
     console.log("handleSignout");
-    navigation.navigate("HomeScreens", { reload: true });
+    navigation.navigate("home", { reload: true });
   };
 
   const loading = useSelector((state) => {

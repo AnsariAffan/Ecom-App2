@@ -82,6 +82,7 @@ console.log(isFocused)
   const [cart, setCart] = useState([]);
   const [count, setCount] = useState(0);
   const [refresh, setRefresh] = useState(false);
+  const [load, setLoad] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const netInfo = useNetInfo();
@@ -124,7 +125,6 @@ console.log(isFocused)
 
   const handleAddToCart = async (item, navigation) => {
     dispatch(getProductCount());
-
     dispatch(postDataToFireStore(item));
 
     console.log(dispatch(getProductCount()));
@@ -158,9 +158,9 @@ console.log(isFocused)
 
     await navigation.reset({
       index: 0,
-      routes: [{ name: "StackNavigator", params: { data: "Reloaded" } }],
+      routes: [{ name: "CartScreen", params: { data: "Reloaded" } }],
     });
-navigation.navigate("")
+  // navigation.navigate("CartScreen")
     setRefresh(!refresh);
   };
 
@@ -249,9 +249,12 @@ navigation.navigate("")
     );
   };
 
+useEffect(() => {
+ 
+}, [loading]);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-
 
  {user ==null ? null :<Text style={{fontSize:20,fontWeight:500,textAlign:"left",paddingLeft:20,paddingTop:7,paddingBotton:7}}>Hello {user.email.slice(0,5).toUpperCase()} ,</Text>}
 
@@ -297,18 +300,21 @@ navigation.navigate("")
 
         {console.log(loading)}
 
-        {loading && (
+        {loading ? (
           <ActivityIndicator
-            size="large"
-            color="#00ff00"
-            style={{ position: "absolute" }}
-          />
-        )}
+          size="large"
+          color="#00ff00"
+          style={{ position: "relative" ,zIndex:2,top:300}}
+        />
+  
+        ): ""}
+ 
+
         {searchQuery?.length > 0 && filteredData?.length === 0 ? (
           <Text style={styles.noProducts}>Product not found</Text>
         ) : (
           <FlatList
-            style={{ flex: 1, marginTop: 65 }}
+            style={{ flex: 1, marginTop: 65}}
             data={filteredData?.length > 0 ? filteredData : products}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
