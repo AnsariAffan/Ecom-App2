@@ -1,6 +1,6 @@
-import { Image, ScrollView, View } from "react-native";
+import { Dimensions, Image, ScrollView, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Button, Card, Text } from "react-native-paper";
+import { ActivityIndicator, Button, Card, Text } from "react-native-paper";
 import StarRating from "./Rating";
 import { useDispatch, useSelector } from "react-redux";
 import { getProductCount, getSingalProduct } from "./api/mySlice";
@@ -23,6 +23,8 @@ const SingleProductDetail = ({ route, navigation }) => {
   });
 
   // console.log(product);
+
+  const [cart , setCart] =useState(true)
 
   const handleAddToCart = async (product, navigation) => {
     dispatch(getProductCount())
@@ -69,10 +71,14 @@ const SingleProductDetail = ({ route, navigation }) => {
   useEffect(() => {
     dispatch(getProductCount())
     dispatch(getSingalProduct(id));
-  }, [id]);
 
-  return (
-    <ScrollView>
+  }, [id]);
+  const { width, height } = Dimensions.get("window");
+  return (<>
+
+ 
+
+      <ScrollView>
     <Card style={{ backgroundColor: "white", }}>
       <View
         style={{
@@ -143,12 +149,13 @@ const SingleProductDetail = ({ route, navigation }) => {
       >
         Add to cart
       </Button>
-     
-
-
+    
       <Paypal productID={id}/>
     </Card>
           </ScrollView>
+          
+  </>
+
   );
 };
 
