@@ -19,17 +19,13 @@ import {
   postDataToFireStore,
 } from "./api/mySlice";
 import { useToast } from "react-native-toast-notifications";
-import {
-  getDataFromFireBase,
-} from "./api/firebaseSlice";
+import { getDataFromFireBase } from "./api/firebaseSlice";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useIsFocused } from "@react-navigation/native";
 
-
-const HomeScreen = ({ navigation,route }) => {
-
-const isFocused = useIsFocused();
-// console.log(isFocused)
+const HomeScreen = ({ navigation, route }) => {
+  const isFocused = useIsFocused();
+  // console.log(isFocused)
 
   const notification = useToast();
   const dispatch = useDispatch();
@@ -57,17 +53,13 @@ const isFocused = useIsFocused();
   const [refresh, setRefresh] = useState(false);
   const [load, setLoad] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
-
+  const [loading, setloading] = useState(true);
   //Check internet Connection
   // const netInfo = useNetInfo();
   // console.log("type " + netInfo.type);
   // console.log("Is Connected " + netInfo.isConnected);
 
-  const loading = useSelector((state) => {
-    return state.mySlice.loading;
-  });
 
- 
 
   const getDataFromLocalStorage = async () => {
     const data = await AsyncStorage.getItem("userCart");
@@ -150,26 +142,21 @@ const isFocused = useIsFocused();
   }, [count, refresh]);
 
 
-  useEffect(() => { 
-   console.log("loading....")
-  }, [loading]);
-
 
   const auth = getAuth();
   const [user, setuser] = useState();
-  useEffect(() => {
 
+  useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (isFocused && user) {
         // console.log(user);
-        setuser(user)
+        setuser(user);
         return user;
-      } else{
-        setuser(null)
+      } else {
+        setuser(null);
       }
     });
   }, [isFocused]);
-
 
   const renderItem = ({ item }) => {
     if (selectedCategory && item.category !== selectedCategory) {
@@ -212,6 +199,7 @@ const isFocused = useIsFocused();
   };
 
   const showCategory = ({ item }) => {
+    setloading(false)
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <Button
@@ -227,103 +215,107 @@ const isFocused = useIsFocused();
     );
   };
 
-
-
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-
- {user ==null ? null :<Text style={{fontSize:20,fontWeight:500,textAlign:"left",paddingLeft:20,paddingTop:7,paddingBotton:7}}>Hello {user.email} ,</Text>}
-
-      <View style={styles.container}>
-        <Searchbar
-          style={{
-            width: "90%",
-            height: 50,
-
-            backgroundColor: "white",
-          }}
-          placeholder="Search"
-          onChangeText={handleSearch}
-          value={searchQuery}
-        />
-
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "bold",
-          }}
-        >
-          Category
-        </Text>
-
-        <ScrollView
-          style={{
-            flex: 1,
-            width: "100%",
-            top: "10%",
-            position: "absolute",
-            zIndex: 3,
-          }}
-        >
-          <FlatList
-            horizontal={true}
-            data={category}
-            renderItem={showCategory}
-          />
-        </ScrollView>
-
-        {/* {searchQuery.length>0 && filteredData.length 0? } */}
-
-      
-
-        {loading && 
-          <ActivityIndicator
-          size="large"
-          color="#00ff00"
-          style={{ position: "relative" ,zIndex:2,top:300}}
-        />
-       }
  
 
-        {searchQuery?.length > 0 && filteredData?.length === 0 ? (
-          <Text style={styles.noProducts}>Product not found</Text>
-        ) : (
-          <FlatList
-            style={{ flex: 1, marginTop: 65}}
-            data={filteredData?.length > 0 ? filteredData : products}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id.toString()}
-            numColumns={2}
-          />
+return (
+
+    <>
+        {loading && <ActivityIndicator style={{height:height}}/>}
+      <SafeAreaView style={{ flex: 1 }}>
+     
+        {user == null ? null : (
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: 500,
+              textAlign: "left",
+              paddingLeft: 20,
+              paddingTop: 7,
+              paddingBotton: 7,
+            }}
+          >
+            Hello {user.email} ,
+          </Text>
         )}
-      </View>
-    </SafeAreaView>
+
+        <View style={styles.container}>
+          <Searchbar
+            style={{
+              width: "90%",
+              height: 50,
+
+              backgroundColor: "white",
+            }}
+            placeholder="Search"
+            onChangeText={handleSearch}
+            value={searchQuery}
+          />
+
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+            }}
+          >
+            Category
+          </Text>
+
+          <ScrollView
+            style={{
+              flex: 1,
+              width: "100%",
+              top: "10%",
+              position: "absolute",
+              zIndex: 3,
+            }}
+          >
+
+            <FlatList
+              horizontal={true}
+              data={category}
+              renderItem={showCategory }
+            />
+          </ScrollView>
+
+
+          {searchQuery?.length > 0 && filteredData?.length === 0 ? (
+            <Text style={styles.noProducts}>Product not found</Text>
+          ) : (
+            <FlatList
+              style={{ flex: 1, marginTop: 65 }}
+              data={filteredData?.length > 0 ? filteredData : products}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+              numColumns={2}
+            />
+          )}
+        </View>
+      </SafeAreaView>
+    </>
   );
 };
 
-const { width, height } = Dimensions.get("window");
-// console.log(height);
 
+// console.log(height);
+const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     marginTop: height / 50,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    
   },
   text: {
     fontSize: 24,
     marginBottom: 20,
   },
 
-safe: {
-    width:width/2
+  safe: {
+    width: width / 2,
   },
   card: {
-    margin:2,
+    margin: 2,
     backgroundColor: "white",
-    
   },
   imageContainer: {
     backgroundColor: "white",

@@ -108,7 +108,7 @@ export const mySlice = createSlice({
   initialState: {
     product: {},
     products: [],
-    loading: false,
+    loading: true,
     error: null,
     category: [],
     count: 0,

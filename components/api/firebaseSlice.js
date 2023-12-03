@@ -114,7 +114,7 @@ export const firebaseslice = createSlice({
     userData: [],
     error: null,
     token: [],
-    loading: false,
+    loading: true,
     LogginUser: [],
   
   },
