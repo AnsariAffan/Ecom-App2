@@ -160,10 +160,12 @@ const HomeScreen = ({ navigation, route }) => {
 
   const renderItem = ({ item }) => {
     setloading(false)
+
     if (selectedCategory && item.category !== selectedCategory) {
       return null;
     }
-    return (
+    return (<>
+    
       <SafeAreaView style={styles.safe}>
         <TouchableOpacity
           onPress={() => nevigateToProductDetailPage(navigation, item.id)}
@@ -196,6 +198,7 @@ const HomeScreen = ({ navigation, route }) => {
           </Card>
         </TouchableOpacity>
       </SafeAreaView>
+      </>
     );
   };
 
@@ -270,7 +273,7 @@ return (
               zIndex: 3,
             }}
           >
- {loading && <ActivityIndicator style={{height:height}}/>}
+ 
             <FlatList
               horizontal={true}
               data={category}
@@ -281,7 +284,8 @@ return (
 
           {searchQuery?.length > 0 && filteredData?.length === 0 ? (
             <Text style={styles.noProducts}>Product not found</Text>
-          ) : (
+          ) : (<>
+            {loading && <ActivityIndicator style={{height:height}}/>}
             <FlatList
               style={{ flex: 1, marginTop: 65 }}
               data={filteredData?.length > 0 ? filteredData : products}
@@ -289,6 +293,7 @@ return (
               keyExtractor={(item) => item.id.toString()}
               numColumns={2}
             />
+            </>
           )}
         </View>
       </SafeAreaView>
