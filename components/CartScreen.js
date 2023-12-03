@@ -5,25 +5,20 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  Pressable,
   TouchableOpacity,
-  Alert,
   Dimensions,
   ScrollView,
 } from "react-native";
-import { Appbar, Button, Card } from "react-native-paper";
+import { Card } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getPriceCount,
   getPriceSum,
   getProductCount,
   getProductsFromLocalStorages,
 } from "./api/mySlice";
-import { AlertNotificationRoot, Dialog } from "react-native-alert-notification";
-import { Toast, useToast } from "react-native-toast-notifications";
+import { useToast } from "react-native-toast-notifications";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Paypal from "./Paypal";
-import ppl from "./api/paypalApi";
 
 const CartScreen = ({ navigation }) => {
   const [productList, setProductList] = useState([]);
@@ -38,21 +33,6 @@ const CartScreen = ({ navigation }) => {
     return state.mySlice.priceCount;
   });
 
-  // console.log(priceCount);
-  // const getSumOfPrice=()=>{
-
-  //   // create a variable for the sum and initialize it
-  //   let sum = 0;
-
-  //   // iterate over each item in the array
-  //   for (let i = 0; i < userData.length; i++ ) {
-  //     sum += userData[i].price;
-  //   }
-
-  //   console.log(sum) // 15
-
-  // }
-
   const getDataFromLocalStorage = async () => {
     const data = await AsyncStorage.getItem("userCart");
     const convertedData = JSON.parse(data);
@@ -64,7 +44,6 @@ const CartScreen = ({ navigation }) => {
     dispatch(getPriceSum());
     dispatch(getProductCount());
 
-
     const index = productList.findIndex((item) => item.id === id);
     // console.log(index);
 
@@ -72,8 +51,6 @@ const CartScreen = ({ navigation }) => {
       productList.splice(index, 1); // Remove the item at 'index'
       console.log(productList);
       await AsyncStorage.setItem("userCart", JSON.stringify(productList));
-     
-
       setRefresh(!refresh);
     }
 
@@ -84,66 +61,19 @@ const CartScreen = ({ navigation }) => {
       offset: 30,
       animationType: "slide-in",
     });
-  
   };
 
-  //  const truncateText = (text, maxLength) => {
-  //   if (text?.length > maxLength) {
-  //     return text.slice(0, maxLength) + "...";
-  //   }
-  //   return text;
-  // };
-
-//   const onUrlChange = (webviewState) => {
-//     console.log("webviewStatewebviewState", webviewState)
-//     if (webviewState.url.includes('https://example.com/cancel')) {
-//         clearPaypalState()
-//         return;
-//     }
-//     if (webviewState.url.includes('https://example.com/return')) {
-
-//         const urlValues = queryString.parseUrl(webviewState.url)
-//         console.log("my urls value", urlValues)
-//         const { token } = urlValues.query
-//         if (!!token) {
-//             paymentSucess(token)
-//         }
-
-//     }
-// }
-
-  
-
-
-
   useEffect(() => {
-    // getSumOfPrice()
     dispatch(getPriceSum());
     dispatch(getProductsFromLocalStorages());
     getDataFromLocalStorage();
     dispatch(getProductCount());
-  }, [navigation, refresh, priceSum,priceCount]);
+  }, [navigation, refresh, priceSum, priceCount]);
 
   return (
     <ScrollView>
       <SafeAreaView>
         <View style={styles.container}>
-          {/* <Appbar>
-            <Appbar.Action
-              icon="arrow-left"
-              onPress={() => {
-                navigation.navigate("HomeScreens");
-                navigation.reset({
-                  index: 0,
-                  routes: [
-                    { name: "HomeScreens", params: { data: "Reloaded" } },
-                  ],
-                });
-              }}
-            />
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>My Cart</Text>
-          </Appbar> */}
-
           {count > 0 ? (
             <FlatList
               data={productList}
@@ -202,9 +132,7 @@ const CartScreen = ({ navigation }) => {
             SubTota: {priceCount}{" "}
           </Text>
 
-          
-          <Paypal/> 
-
+          <Paypal />
         </View>
       </SafeAreaView>
     </ScrollView>

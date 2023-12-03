@@ -1,12 +1,11 @@
-import { Password } from "@mui/icons-material";
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { TextInput, Button, Title } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { getDataFromFireBase, setDataToFireBase, userRagistration } from "./api/firebaseSlice";
+import { getDataFromFireBase, userRagistration } from "./api/firebaseSlice";
 import { useEffect } from "react";
 
-const Ragistration = ({navigation}) => {
+const Ragistration = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -14,9 +13,6 @@ const Ragistration = ({navigation}) => {
     timestamp: null,
   });
 
-  const userData = useSelector((state) => {
-    return state.firebaseslice.userData;
-  });
   const loading= useSelector((state)=>{return state.firebaseslice.loading})
   const dispatch = useDispatch();
 

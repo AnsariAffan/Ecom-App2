@@ -5,20 +5,15 @@ import {
   TextInput,
   Button,
   Title,
-  ActivityIndicator,
   Text,
 } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  checkLogin,
   getDataFromFireBase,
-  getLogginUserDeatils,
   userLogin,
-  userSignout,
   userToken,
 } from "./api/firebaseSlice";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebaseConfig";
 import { useIsFocused } from "@react-navigation/native";
 
 const Login = ({ navigation }) => {

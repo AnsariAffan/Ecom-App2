@@ -1,12 +1,9 @@
 import { Image, ScrollView, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { FlatList } from "react-native";
 import { Button, Card, Text } from "react-native-paper";
 import StarRating from "./Rating";
 import { useDispatch, useSelector } from "react-redux";
 import { getProductCount, getSingalProduct } from "./api/mySlice";
-import Dropdown from "./DropdownItem";
-import DropdownItem from "./DropdownItem";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useToast } from "react-native-toast-notifications";
 import Paypal from "./Paypal";
@@ -20,7 +17,6 @@ const SingleProductDetail = ({ route, navigation }) => {
 
   const [refresh, setRefresh] = useState(false);
   const { id } = route.params;
-  const [cart, setCart] = useState([]);
   const dispatch = useDispatch();
   const product = useSelector((state) => {
     return state.mySlice.product;

@@ -1,5 +1,5 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import React, { useEffect, useState } from "react";
+import React, { useEffect} from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -8,7 +8,6 @@ import Login from "./Login";
 import Settings from "./Settings";
 import Ragistration from "./Ragistration";
 import AboutPage from "./AboutPage";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import CartScreen from "./CartScreen";
 import HomeScreen from "./HomeScreen";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,12 +34,6 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Ragistration" component={Ragistration} />
       <HomeStack.Screen name="AboutPage" component={AboutPage} />
       <HomeStack.Screen  name="Paypal" component={Paypal} />
-      {/* <HomeStack.Screen
-        // options={{ headerShown: true  }}
-        name="CartScreen"
-        component={CartScreen}
-        
-      /> */}
     </HomeStack.Navigator>
   );
 }

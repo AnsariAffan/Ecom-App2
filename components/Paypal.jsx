@@ -3,12 +3,12 @@ import { View, StyleSheet, TouchableOpacity, Modal ,Text} from "react-native";
 
 import WebView from "react-native-webview";
 import paypalApi from "./api/paypalApi";
-import { Appbar, Button } from "react-native-paper";
+import { Button } from "react-native-paper";
 import queryString from "query-string";
 import { useDispatch, useSelector } from "react-redux";
 import { getSingalProduct } from "./api/mySlice";
 
-const Paypal = ({navigation,productID}) => {
+const Paypal = ({productID}) => {
 
   const product = useSelector((state) => {
     return state.mySlice.product;

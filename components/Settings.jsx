@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Button, List } from "react-native-paper";
 import { FontAwesome5 } from "react-native-vector-icons";
 import { userSignout } from "./api/firebaseSlice";
@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useIsFocused } from "@react-navigation/native";
 
-import Paypal from "./Paypal";
+
 
 
 const Settings = ({ navigation }) => {
@@ -84,13 +84,7 @@ const Settings = ({ navigation }) => {
         Sign out
       </Button>
       )}
-{/* 
-
-<Paypal/> */}
-
-
-
-     
+  
     </View>
   );
 };

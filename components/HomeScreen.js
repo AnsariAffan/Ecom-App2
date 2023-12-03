@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  Image,
   TouchableOpacity,
   ScrollView,
   Dimensions,
@@ -12,7 +11,6 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ActivityIndicator, Button, Card, Searchbar } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import CartScreen from "./CartScreen";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllProducts,
@@ -20,27 +18,18 @@ import {
   getProductsCategory,
   postDataToFireStore,
 } from "./api/mySlice";
-import axios from "axios";
 import { useToast } from "react-native-toast-notifications";
-import { db } from "../firebaseConfig";
-import { collection, getDoc, getDocs } from "firebase/firestore";
 import {
   getDataFromFireBase,
-  getLogginUserDeatils,
-  setDataToFireBase,
 } from "./api/firebaseSlice";
-import Loading from "./Loading";
-import { useNetInfo } from "@react-native-community/netinfo";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useIsFocused } from "@react-navigation/native";
 
 
 const HomeScreen = ({ navigation,route }) => {
 
-
 const isFocused = useIsFocused();
 // console.log(isFocused)
-
 
   const notification = useToast();
   const dispatch = useDispatch();
@@ -160,8 +149,6 @@ const isFocused = useIsFocused();
     getDataFromLocalStorage();
   }, [count, refresh]);
 
- 
-
 
   useEffect(() => { 
    console.log("loading....")
@@ -245,7 +232,7 @@ const isFocused = useIsFocused();
   return (
     <SafeAreaView style={{ flex: 1 }}>
 
- {user ==null ? null :<Text style={{fontSize:20,fontWeight:500,textAlign:"left",paddingLeft:20,paddingTop:7,paddingBotton:7}}>Hello {user.email.slice(0,5).toUpperCase()} ,</Text>}
+ {user ==null ? null :<Text style={{fontSize:20,fontWeight:500,textAlign:"left",paddingLeft:20,paddingTop:7,paddingBotton:7}}>Hello {user.email} ,</Text>}
 
       <View style={styles.container}>
         <Searchbar

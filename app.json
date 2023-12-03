@@ -1,7 +1,6 @@
 {
   "expo": {
     "android": {
-  
       "package": "com.mohammadaffan.AwesomeProject",
       "runtimeVersion": "1.0.0"
     },
