@@ -160,7 +160,7 @@ console.log(isFocused)
       index: 0,
       routes: [{ name: "CartScreen", params: { data: "Reloaded" } }],
     });
-  // navigation.navigate("CartScreen")
+
     setRefresh(!refresh);
   };
 

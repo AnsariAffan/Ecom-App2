@@ -59,7 +59,10 @@ const SingleProductDetail = ({ route, navigation }) => {
     setCart(existingCart);
 
     await AsyncStorage.setItem("userCart", JSON.stringify(existingCart));
-    navigation.navigate("CartScreen");
+    await navigation.reset({
+      index: 0,
+      routes: [{ name: "CartScreen", params: { data: "Reloaded" } }],
+    });
    
     setRefresh(!refresh);
   };
