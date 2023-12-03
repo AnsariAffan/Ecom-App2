@@ -159,6 +159,7 @@ const HomeScreen = ({ navigation, route }) => {
   }, [isFocused]);
 
   const renderItem = ({ item }) => {
+    setloading(false)
     if (selectedCategory && item.category !== selectedCategory) {
       return null;
     }
@@ -220,7 +221,7 @@ const HomeScreen = ({ navigation, route }) => {
 return (
 
     <>
-        {loading && <ActivityIndicator style={{height:height}}/>}
+     
       <SafeAreaView style={{ flex: 1 }}>
      
         {user == null ? null : (
@@ -269,7 +270,7 @@ return (
               zIndex: 3,
             }}
           >
-
+ {loading && <ActivityIndicator style={{height:height}}/>}
             <FlatList
               horizontal={true}
               data={category}
