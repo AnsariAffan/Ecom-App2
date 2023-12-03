@@ -7,7 +7,7 @@ import { db } from "../../firebaseConfig";
 export const getAllProducts =  createAsyncThunk("api/getAllData", async () => {
   try {
     const myData = await axios("https://fakestoreapi.com/products");
-    console.log(myData.data);
+    // console.log(myData.data);
     return myData.data;
   } catch (error) {
     console.log(error);
@@ -21,7 +21,7 @@ export const getProductsCategory = createAsyncThunk(
       const myData = await axios.get(
         "https://fakestoreapi.com/products/categories"
       );
-      console.log(myData.data);
+      // console.log(myData.data);
       return myData.data;
     } catch (error) {
       console.log(error);
@@ -34,7 +34,7 @@ export const getSingalProduct = createAsyncThunk(
   async (id) => {
     try {
       const myData = await axios.get(`https://fakestoreapi.com/products/${id}`);
-      console.log(myData.data);
+      // console.log(myData.data);
       return myData.data;
     } catch (error) {
       console.log(error);

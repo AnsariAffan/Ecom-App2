@@ -38,7 +38,7 @@ const CartScreen = ({ navigation }) => {
     return state.mySlice.priceCount;
   });
 
-  console.log(priceCount);
+  // console.log(priceCount);
   // const getSumOfPrice=()=>{
 
   //   // create a variable for the sum and initialize it
@@ -64,15 +64,15 @@ const CartScreen = ({ navigation }) => {
     dispatch(getPriceSum());
     dispatch(getProductCount());
 
-    console.log("me ander agaya bhai");
+
     const index = productList.findIndex((item) => item.id === id);
-    console.log(index);
+    // console.log(index);
 
     if (index > -1) {
       productList.splice(index, 1); // Remove the item at 'index'
       console.log(productList);
       await AsyncStorage.setItem("userCart", JSON.stringify(productList));
-      console.log("mil gaya bhai");
+     
 
       setRefresh(!refresh);
     }
@@ -84,7 +84,7 @@ const CartScreen = ({ navigation }) => {
       offset: 30,
       animationType: "slide-in",
     });
-    console.log("nhi mila bhai");
+  
   };
 
   //  const truncateText = (text, maxLength) => {
@@ -212,7 +212,7 @@ const CartScreen = ({ navigation }) => {
 };
 
 const { width, height } = Dimensions.get("window");
-console.log(height);
+// console.log(height);
 
 const styles = StyleSheet.create({
   container: {

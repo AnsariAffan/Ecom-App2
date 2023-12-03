@@ -26,12 +26,12 @@ const SingleProductDetail = ({ route, navigation }) => {
     return state.mySlice.product;
   });
 
-  console.log(product);
+  // console.log(product);
 
   const handleAddToCart = async (product, navigation) => {
     dispatch(getProductCount())
   
-    console.log(dispatch(getProductCount()))
+    // console.log(dispatch(getProductCount()))
     let existingCart = await AsyncStorage.getItem("userCart");
     if (!existingCart) {
       existingCart = [];

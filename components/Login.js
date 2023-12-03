@@ -33,7 +33,7 @@ const Login = ({ navigation }) => {
 
 
   const isFocused = useIsFocused();
-  console.log(isFocused)
+  // console.log(isFocused)
   const dispatch = useDispatch();
 
   const handleInputChange = (field, value) => {
@@ -69,7 +69,7 @@ const auth = getAuth();
 
     onAuthStateChanged(auth, (user) => {
       if (isFocused && user) {
-        console.log(user);
+        // console.log(user);
         setuser(user)
         return user;
       } else{

@@ -80,7 +80,7 @@ const createOrder = (token = '',orderDetail) => {
 
     return new Promise((resolve, reject) => {
         fetch(baseUrl + '/v2/checkout/orders', requestOptions).then(response => response.text()).then(result => {
-            console.log("result print", result)
+            // console.log("result print", result)
             const res = JSON.parse(result)
             resolve(res)
         }).catch(error => {
@@ -102,7 +102,7 @@ const capturePayment = (id, token = '') => {
 
     return new Promise((resolve, reject) => {
         fetch(baseUrl + `/v2/checkout/orders/${id}/capture`, requestOptions).then(response => response.text()).then(result => {
-            console.log("result print", result)
+            // console.log("result print", result)
             const res = JSON.parse(result)
             resolve(res)
         }).catch(error => {

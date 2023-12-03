@@ -60,7 +60,7 @@ const Paypal = ({navigation,productID}) => {
         const token = await paypalApi.generateToken()
         const res = await paypalApi.createOrder(token,orderDetail)
         setAccessToken(token)
-        console.log("res++++++", res)
+        // console.log("res++++++", res)
         setLoading(false)
         if (!!res?.links) {
             const findUrl = res.links.find(data => data?.rel == "approve")
@@ -76,7 +76,7 @@ const Paypal = ({navigation,productID}) => {
 }
 
   const onUrlChange = (webviewState) => {
-    console.log("webviewStatewebviewState", webviewState)
+    // console.log("webviewStatewebviewState", webviewState)
     if (webviewState.url.includes('https://example.com/cancel')) {
         clearPaypalState()
         return;
@@ -84,7 +84,7 @@ const Paypal = ({navigation,productID}) => {
     if (webviewState.url.includes('https://example.com/return')) {
 
         const urlValues = queryString.parseUrl(webviewState.url)
-        console.log("my urls value", urlValues)
+        // console.log("my urls value", urlValues)
         const { token } = urlValues.query
         if (!!token) {
             paymentSucess(token)
@@ -96,7 +96,7 @@ const Paypal = ({navigation,productID}) => {
 const paymentSucess = async (id) => {
     try {
         const res = paypalApi.capturePayment(id, accessToken)
-        console.log("capturePayment res++++", res)
+        // console.log("capturePayment res++++", res)
         alert("Payment sucessfull...!!!")
         clearPaypalState()
     } catch (error) {

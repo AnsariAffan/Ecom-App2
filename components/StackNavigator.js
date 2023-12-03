@@ -50,7 +50,7 @@ const StackNavigator = () => {
   const count = useSelector((state) => {
     return state.mySlice.count;
   });
-  console.log(count);
+  // console.log(count);
 
   useEffect(() => {
     dispatch(getProductCount());

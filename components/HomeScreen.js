@@ -37,26 +37,10 @@ import { useIsFocused } from "@react-navigation/native";
 
 const HomeScreen = ({ navigation,route }) => {
 
-// const {reload} = route.params
-// console.log(reload)
 
 const isFocused = useIsFocused();
-console.log(isFocused)
+// console.log(isFocused)
 
-// useEffect(() => {
-//   if(isFocused){
-//     const auth = getAuth();
-//     onAuthStateChanged(auth, (user) => {
-//       if (user) {
-//         const email = user.email;
-//         setuser(email);
-//       } else {
-//       }
-//     });
-//   }
-//   console.log("im reload")
- 
-// }, [isFocused]);
 
   const notification = useToast();
   const dispatch = useDispatch();
@@ -85,13 +69,16 @@ console.log(isFocused)
   const [load, setLoad] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const netInfo = useNetInfo();
-  console.log("type " + netInfo.type);
-  console.log("Is Connected " + netInfo.isConnected);
+  //Check internet Connection
+  // const netInfo = useNetInfo();
+  // console.log("type " + netInfo.type);
+  // console.log("Is Connected " + netInfo.isConnected);
 
   const loading = useSelector((state) => {
     return state.mySlice.loading;
   });
+
+ 
 
   const getDataFromLocalStorage = async () => {
     const data = await AsyncStorage.getItem("userCart");
@@ -127,7 +114,7 @@ console.log(isFocused)
     dispatch(getProductCount());
     dispatch(postDataToFireStore(item));
 
-    console.log(dispatch(getProductCount()));
+    // console.log(dispatch(getProductCount()));
     let existingCart = await AsyncStorage.getItem("userCart");
     if (!existingCart) {
       existingCart = [];
@@ -174,7 +161,11 @@ console.log(isFocused)
   }, [count, refresh]);
 
  
-  
+
+
+  useEffect(() => { 
+   console.log("loading....")
+  }, [loading]);
 
 
   const auth = getAuth();
@@ -183,7 +174,7 @@ console.log(isFocused)
 
     onAuthStateChanged(auth, (user) => {
       if (isFocused && user) {
-        console.log(user);
+        // console.log(user);
         setuser(user)
         return user;
       } else{
@@ -298,7 +289,7 @@ useEffect(() => {
 
         {/* {searchQuery.length>0 && filteredData.length 0? } */}
 
-        {console.log(loading)}
+      
 
         {loading ? (
           <ActivityIndicator
@@ -327,7 +318,7 @@ useEffect(() => {
 };
 
 const { width, height } = Dimensions.get("window");
-console.log(height);
+// console.log(height);
 
 const styles = StyleSheet.create({
   container: {

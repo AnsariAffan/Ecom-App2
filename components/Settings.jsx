@@ -18,7 +18,7 @@ const Settings = ({ navigation }) => {
 
   const handleSignout = async (navigation) => {
     dispatch(userSignout());
-    console.log("handleSignout");
+    // console.log("handleSignout");
     navigation.navigate("home", { reload: true });
   };
 
@@ -27,14 +27,14 @@ const Settings = ({ navigation }) => {
   });
 
   const isFocused = useIsFocused();
-  console.log(isFocused);
+  // console.log(isFocused);
 
   const auth = getAuth();
   const [user, setuser] = useState();
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (isFocused && user) {
-        console.log(user);
+        // console.log(user);
         setuser(user);
         return user;
       } else {

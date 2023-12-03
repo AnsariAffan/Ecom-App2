@@ -28,7 +28,7 @@ const Ragistration = ({navigation}) => {
   };
 
   const handleSubmit = async () => {
-    console.log("test")
+    // console.log("test")
     dispatch(userRagistration(formData))
   };
 

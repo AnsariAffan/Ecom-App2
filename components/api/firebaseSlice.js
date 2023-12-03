@@ -26,7 +26,7 @@ export const getDataFromFireBase = createAsyncThunk(
       const userCollection = collection(db, "userCollection");
       const userSnapshot = await getDocs(userCollection);
       const userList = userSnapshot.docs.map((doc) => doc.data());
-      console.log(userList);
+      // console.log(userList);
       return userList;
     } catch (error) {
       console.log(error);
@@ -52,8 +52,8 @@ export const userRagistration = createAsyncThunk(
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          console.log(errorCode);
-          console.log(errorMessage);
+          // console.log(errorCode);
+          // console.log(errorMessage);
           window.alert(errorMessage.slice(9, 50));
         });
     } catch (error) {
@@ -69,7 +69,7 @@ export const userLogin = createAsyncThunk("api/userLogin", async (data) => {
       // Signed in
       const user = userCredential.user;
 
-      console.log(user);
+      // console.log(user);
       window.alert("user logged in successfully");
  
       return user;
@@ -88,8 +88,8 @@ export const userSignout = createAsyncThunk("api/userSignout", async (auth) => {
     signOut(auth)
       .then(() => {
         // Sign-out successful.
-        console.log("Sign-out successful");
-        console.log(auth);
+        // console.log("Sign-out successful");
+        // console.log(auth);
         window.alert("Sign-out successful");
       
       })
