@@ -240,9 +240,7 @@ const isFocused = useIsFocused();
     );
   };
 
-useEffect(() => {
- 
-}, [loading]);
+
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -291,14 +289,13 @@ useEffect(() => {
 
       
 
-        {loading ? (
+        {loading && 
           <ActivityIndicator
           size="large"
           color="#00ff00"
           style={{ position: "relative" ,zIndex:2,top:300}}
         />
-  
-        ): ""}
+       }
  
 
         {searchQuery?.length > 0 && filteredData?.length === 0 ? (
