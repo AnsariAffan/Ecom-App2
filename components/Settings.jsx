@@ -12,6 +12,7 @@ import { useIsFocused } from "@react-navigation/native";
 
 
 
+
 const Settings = ({ navigation }) => {
 
   const dispatch = useDispatch();
@@ -55,7 +56,15 @@ const Settings = ({ navigation }) => {
 
       {user == null ? (
         <>
-         
+          <List.Item
+            onPress={() => navigation.navigate("Map")}
+            style={{ borderWidth: 1, borderRadius: 6, padding: 6, margin: 10 }}
+            title="Map"
+            left={() => (
+              <FontAwesome5 name="sign-in-alt" color="#000" size={20} />
+            )}
+          />
+
           <List.Item
             onPress={() => navigation.navigate("Login")}
             style={{ borderWidth: 1, borderRadius: 6, padding: 6, margin: 10 }}
@@ -85,6 +94,7 @@ const Settings = ({ navigation }) => {
       </Button>
       )}
   
+
     </View>
   );
 };
