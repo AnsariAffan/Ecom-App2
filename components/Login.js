@@ -1,6 +1,9 @@
+
+
+
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import {
   TextInput,
   Button,
@@ -16,20 +19,20 @@ import {
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useIsFocused } from "@react-navigation/native";
 
-const Login = ({ navigation }) => {
+
+export default function Login({ navigation }) {
+  const goToRegistration = () => {
+    navigation.navigate("Registration");
+  };
+  const isFocused = useIsFocused();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
+  const dispatch = useDispatch();
   const loading = useSelector((state) => {
     return state.firebaseslice.loading;
   });
-
-
-  const isFocused = useIsFocused();
-  // console.log(isFocused)
-  const dispatch = useDispatch();
 
   const handleInputChange = (field, value) => {
     setFormData({
@@ -38,68 +41,73 @@ const Login = ({ navigation }) => {
     });
   };
 
-
-
   const handleSubmit = async (formData) => {
-
-      dispatch(userLogin(formData));
-      navigation.navigate("HomeScreens")
-      dispatch(userToken())
-   
+    dispatch(userLogin(formData));
+    navigation.navigate("HomeScreens");
+    dispatch(userToken());
   };
 
-
-
-const [user, setuser] = useState();
-const auth = getAuth();
-
-
+  const [user, setuser] = useState();
+  const auth = getAuth();
 
   useEffect(() => {
     dispatch(getDataFromFireBase());
   }, []);
 
-
   useEffect(() => {
-
     onAuthStateChanged(auth, (user) => {
       if (isFocused && user) {
         // console.log(user);
-        setuser(user)
+        setuser(user);
         return user;
-      } else{
-        setuser(null)
+      } else {
+        setuser(null);
       }
     });
   }, [isFocused]);
 
   return (
     <View style={styles.container}>
-  
- {user? <Text>{user.email}</Text> : <Text>No user is logged in</Text>}
-
-      <Title
+      <View
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "row",
+          height: 300,
+        }}
+      >
+        <Image
+          source={require("../assets/logo2.png")}
+          style={{ width: 200, height: 300, marginTop: 50 }}
+        />
+      </View>
+      <Text
         style={{
           textAlign: "center",
-          color: "blue",
-          marginButtom: 20,
-          fontWeight: 50,
+          marginTop: 20,
+          marginBottom: 20,
+          fontSize: 30,
+          color: "orange",
         }}
       >
         Login
-      </Title>
+      </Text>
 
       <TextInput
-        placeholder="Email"
+        style={styles.Inputs}
+        label="Email"
         value={formData.email}
         onChangeText={(text) => handleInputChange("email", text)}
       />
       <TextInput
+        style={styles.Inputs}
         placeholder="Password"
         secureTextEntry
         value={formData.password}
         onChangeText={(text) => handleInputChange("password", text)}
       />
+
       <Button
         mode="contained"
         onPress={() => handleSubmit(formData)}
@@ -109,23 +117,27 @@ const auth = getAuth();
       >
         Login
       </Button>
-   
-
-      
-      
+      <Text
+        style={{ marginLeft: 20, marginTop: 20 }}
+      onPress={()=>{navigation.navigate("Ragistration")}}
+      >
+        Don't have an account? Registration
+      </Text>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
+    width: "100%",
     flex: 1,
-    padding: 16,
+    display: "flex",
+    flexDirection: "column",
     justifyContent: "center",
+    padding: 50,
+    backgroundColor: "white",
   },
-  button: {
-    marginTop: 16,
+  Inputs: {
+    margin: 10,
   },
 });
-
-export default Login;

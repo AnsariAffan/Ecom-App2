@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getSingalProduct } from "./api/mySlice";
 
 const Paypal = ({ productID }) => {
+  // console.log(productID)
   const product = useSelector((state) => {
     return state.mySlice.product;
   });
@@ -104,17 +105,11 @@ const Paypal = ({ productID }) => {
   };
 
   return (
-    <View>
+         <View>
       <Button
-        mode="contained-tonal"
+      mode="contained" style={styles.buyButton}
         onPress={() => {
           onPressPaypal();
-        }}
-        style={{
-          marginTop: 0,
-          backgroundColor: "lightgreen",
-          borderRadius: 10,
-          height: "20",
         }}
       >
         Purchase Now
@@ -132,9 +127,18 @@ const Paypal = ({ productID }) => {
         </View>
       </Modal>
     </View>
+
+   
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  buyButton: {
+    flex: 1,
+    marginRight: 8,
+    backgroundColor: '#FF9900', // Amazon orange color
+  },
+
+});
 
 export default Paypal;

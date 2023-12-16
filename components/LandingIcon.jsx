@@ -15,7 +15,7 @@ const LandingIcon = () => {
         <View style={{ alignItems: "center" }}>
           <Image
             style={{ height: 200, width: 200 }}
-            source={require("../assets/landingIcon.png")}
+            source={require("../assets/logo2.png")}
           />
         </View>
       </View>

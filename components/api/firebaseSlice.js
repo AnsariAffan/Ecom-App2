@@ -39,13 +39,14 @@ export const userRagistration = createAsyncThunk(
   async (data) => {
     try {
       const auth = getAuth();
-
       createUserWithEmailAndPassword(auth, data.email, data.password)
         .then((userCredential) => {
           // Signed up
           const user = userCredential.user;
           console.log(user);
           window.alert("user ragistered successfully");
+
+          
          
           // ...
         })
@@ -56,11 +57,31 @@ export const userRagistration = createAsyncThunk(
           // console.log(errorMessage);
           window.alert(errorMessage.slice(9, 50));
         });
+
+// function writeUserData(userId, name, email, imageUrl) {
+//   const db = getDatabase();
+//   set(ref(db, 'users/' + userId), {
+//     username: name,
+//     email: email,
+//     profile_picture : imageUrl
+//   });
+// }
+
     } catch (error) {
       console.log(error);
     }
   }
 );
+
+export const userRagistrationIntoRealTimeStorage = createAsyncThunk("api/userRagistrationIntoRealTimeStorage",(data)=>{
+    const db = getDatabase();
+    set(ref(db, 'Users/' + data.userId), {
+      username: data.name,
+      email: data.email,
+      password : data.password
+    });
+  }
+)
 
 export const userLogin = createAsyncThunk("api/userLogin", async (data) => {
   const auth = getAuth();

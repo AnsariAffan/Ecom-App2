@@ -35,8 +35,8 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Ragistration" component={Ragistration} />
       <HomeStack.Screen name="AboutPage" component={AboutPage} />
       <HomeStack.Screen  name="Paypal" component={Paypal} />
-      <HomeStack.Screen  name="Map" component={Map} />
-      {/* <HomeStack.Screen
+{/*   
+      <HomeStack.Screen
         // options={{ headerShown: true  }}
         name="CartScreen"
         component={CartScreen}
