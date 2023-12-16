@@ -19,6 +19,9 @@ import {
 import { useToast } from "react-native-toast-notifications";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Paypal from "./Paypal";
+import { getUserCartDataFromFireBase } from "./api/firebaseSlice";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useIsFocused } from "@react-navigation/native";
 
 const CartScreen = ({ navigation }) => {
   const [productList, setProductList] = useState([]);
@@ -28,6 +31,10 @@ const CartScreen = ({ navigation }) => {
   const notification = useToast();
   const count = useSelector((state) => {
     return state.mySlice.count;
+  });
+
+  const userCarts = useSelector((state) => {
+    return state.firebaseslice.userCarts;
   });
   const priceCount = useSelector((state) => {
     return state.mySlice.priceCount;
@@ -68,7 +75,48 @@ const CartScreen = ({ navigation }) => {
     dispatch(getProductsFromLocalStorages());
     getDataFromLocalStorage();
     dispatch(getProductCount());
+    getUserCarts()
+    dispatch(getUserCartDataFromFireBase())
   }, [navigation, refresh, priceSum, priceCount]);
+
+
+  const auth = getAuth();
+  const [userEmail, setUserEmail] = useState();
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (isFocused && user) {
+        // console.log(user);
+        setUserEmail(user.email);
+        return user;
+      } else {
+        setUserEmail(null);
+      }
+    });
+  }, [isFocused]);
+
+  useEffect(() => {
+
+    dispatch(getUserCartDataFromFireBase())
+  }, []);
+  
+
+
+const getUserCarts =()=>{
+console.log(userEmail)
+console.log(userCarts)
+
+userCarts.filter((e)=>{
+  if(userEmail == e.email){
+    console.log(e)
+    return e
+  }
+})
+
+}
+
+
+
 
   return (
     <ScrollView>

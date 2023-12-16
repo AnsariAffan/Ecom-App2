@@ -29,12 +29,14 @@ const Ragistration = ({ navigation }) => {
 
   const handleSubmit = async () => {
     // console.log("test")
-    dispatch(postUserDataToFireStore(formData))
+
     dispatch(userRagistration(formData));
+    dispatch(postUserDataToFireStore(formData))
   };
 
   useEffect(() => {
     dispatch(getDataFromFireBase());
+
   }, []);
 
   if (loading) {

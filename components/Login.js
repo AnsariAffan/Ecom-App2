@@ -53,9 +53,7 @@ export default function Login({ navigation }) {
   const [user, setuser] = useState();
   const auth = getAuth();
 
-  useEffect(() => {
-    dispatch(getDataFromFireBase());
-  }, []);
+
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {

@@ -19,11 +19,11 @@ import {
   signOut,
 } from "firebase/auth";
 
-export const getDataFromFireBase = createAsyncThunk(
+export const getUserCartDataFromFireBase = createAsyncThunk(
   "api/getDataFromFireBase",
   async () => {
     try {
-      const userCollection = collection(db, "userCollection");
+      const userCollection = collection(db, "userCartData");
       const userSnapshot = await getDocs(userCollection);
       const userList = userSnapshot.docs.map((doc) => doc.data());
       // console.log(userList);
@@ -137,22 +137,23 @@ export const firebaseslice = createSlice({
     userData: [],
     error: null,
     token: [],
-    loading: true,
+    loading: false,
     LogginUser: [],
+    userCarts:[]
   
   },
 
   extraReducers: (builders) => {
 
     
-    builders.addCase(getDataFromFireBase.pending, (state, action) => {
+    builders.addCase(getUserCartDataFromFireBase.pending, (state, action) => {
       state.loading = true;
     });
-    builders.addCase(getDataFromFireBase.fulfilled, (state, action) => {
-      state.userData = action.payload;
+    builders.addCase(getUserCartDataFromFireBase.fulfilled, (state, action) => {
+      state.userCarts = action.payload;
       state.loading = false;
     });
-    builders.addCase(getDataFromFireBase.rejected, (state, action) => {
+    builders.addCase(getUserCartDataFromFireBase.rejected, (state, action) => {
       // I repeated fulfilled
       state.error = action.payload;
       state.loading = false;

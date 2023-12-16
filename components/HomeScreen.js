@@ -15,7 +15,6 @@ import {
 } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
-import { getDataFromFireBase } from "./api/firebaseSlice";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useIsFocused } from "@react-navigation/native";
 import {
@@ -27,6 +26,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "react-native-toast-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getUserCartDataFromFireBase } from "./api/firebaseSlice";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -42,7 +42,7 @@ function HomeScreen({ navigation }) {
   const [refresh, setRefresh] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-  const isFocused = useIsFocused();
+
   const notification = useToast();
   const dispatch = useDispatch();
 
@@ -144,11 +144,11 @@ function HomeScreen({ navigation }) {
 
   useEffect(() => {
     dispatch(getProductCount());
-    dispatch(getDataFromFireBase());
     dispatch(getAllProducts());
     dispatch(getProductsCategory());
     getProductData();
     getDataFromLocalStorage();
+    dispatch(getUserCartDataFromFireBase())
   }, [count, refresh]);
 
   const getDataFromLocalStorage = async () => {
@@ -157,9 +157,11 @@ function HomeScreen({ navigation }) {
     setCount(convertedData?.length);
   };
 
+  
+
   const auth = getAuth();
   const [user, setuser] = useState();
-
+  const isFocused = useIsFocused();
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (isFocused && user) {
