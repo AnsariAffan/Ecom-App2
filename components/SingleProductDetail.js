@@ -5,10 +5,12 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { Avatar, Button, Card, Text } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProductCount, getSingalProduct } from "./api/mySlice";
+import { getProductCount, getSingalProduct, postUserCartDataToFireStore, postUserDataToFireStore } from "./api/mySlice";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useToast } from 'react-native-toast-notifications';
 import Paypal from './Paypal';
+import { useIsFocused } from '@react-navigation/native';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 function SingleProductDetail({ route, navigation }) {
   const { id } = route.params;
@@ -16,6 +18,7 @@ function SingleProductDetail({ route, navigation }) {
   const [cart , setCart] =useState(true)
   const notification = useToast()
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
   const product = useSelector((state) => {
     return state.mySlice.product;
   });
@@ -24,12 +27,28 @@ function SingleProductDetail({ route, navigation }) {
     return state.mySlice.loading;
   });
 
+  const auth = getAuth();
+  const [user, setuser] = useState();
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (isFocused && user) {
+        // console.log(user);
+        setuser(user);
+        return user;
+      } else {
+        setuser(null);
+      }
+    });
+  }, [isFocused]);
+
+
   useEffect(() => {
         dispatch(getProductCount())
         dispatch(getSingalProduct(id));
       }, [id]);
 
       const handleAddToCart = async (product, navigation) => {
+        dispatch(postUserCartDataToFireStore({product,email:user.email}))
             dispatch(getProductCount())
           
             // console.log(dispatch(getProductCount()))

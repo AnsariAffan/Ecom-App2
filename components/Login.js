@@ -9,11 +9,13 @@ import {
   Button,
   Title,
   Text,
+  ActivityIndicator,
 } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getDataFromFireBase,
   userLogin,
+  userRagistrationIntoRealTimeStorage,
   userToken,
 } from "./api/firebaseSlice";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -42,6 +44,7 @@ export default function Login({ navigation }) {
   };
 
   const handleSubmit = async (formData) => {
+    // dispatch(userRagistrationIntoRealTimeStorage(formData))
     dispatch(userLogin(formData));
     navigation.navigate("HomeScreens");
     dispatch(userToken());
@@ -65,6 +68,15 @@ export default function Login({ navigation }) {
       }
     });
   }, [isFocused]);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007BFF" />
+      </View>
+    );
+  }
+
 
   return (
     <View style={styles.container}>

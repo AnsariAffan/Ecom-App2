@@ -58,14 +58,9 @@ export const userRagistration = createAsyncThunk(
           window.alert(errorMessage.slice(9, 50));
         });
 
-// function writeUserData(userId, name, email, imageUrl) {
-//   const db = getDatabase();
-//   set(ref(db, 'users/' + userId), {
-//     username: name,
-//     email: email,
-//     profile_picture : imageUrl
-//   });
-// }
+
+
+
 
     } catch (error) {
       console.log(error);
@@ -74,16 +69,22 @@ export const userRagistration = createAsyncThunk(
 );
 
 export const userRagistrationIntoRealTimeStorage = createAsyncThunk("api/userRagistrationIntoRealTimeStorage",(data)=>{
+
+  const writeUserData=(data)=> {
     const db = getDatabase();
-    set(ref(db, 'Users/' + data.userId), {
-      username: data.name,
+    set(ref(db, 'users/' + 1), {
       email: data.email,
-      password : data.password
+      password: data,password,
+   
     });
+  }
+  writeUserData(data)
   }
 )
 
 export const userLogin = createAsyncThunk("api/userLogin", async (data) => {
+
+
   const auth = getAuth();
   signInWithEmailAndPassword(auth, data.email, data.password)
     .then((userCredential) => {
@@ -92,7 +93,8 @@ export const userLogin = createAsyncThunk("api/userLogin", async (data) => {
 
       // console.log(user);
       window.alert("user logged in successfully");
- 
+
+   
       return user;
     })
     .catch((error) => {

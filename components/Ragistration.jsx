@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Image } from "react-native";
-import { TextInput, Button, Title, Text } from "react-native-paper";
+import { TextInput, Button, Title, Text, ActivityIndicator } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { getDataFromFireBase, userRagistration } from "./api/firebaseSlice";
 import { useEffect } from "react";
+import { postUserDataToFireStore } from "./api/mySlice";
 
 const Ragistration = ({ navigation }) => {
   const [image, setImage] = useState(null);
@@ -28,12 +29,21 @@ const Ragistration = ({ navigation }) => {
 
   const handleSubmit = async () => {
     // console.log("test")
+    dispatch(postUserDataToFireStore(formData))
     dispatch(userRagistration(formData));
   };
 
   useEffect(() => {
     dispatch(getDataFromFireBase());
   }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007BFF" />
+      </View>
+    );
+  }
 
   return (
 
@@ -93,6 +103,7 @@ const Ragistration = ({ navigation }) => {
       >
         Sign Up
       </Button>
+      
       <Text
         style={{ marginTop: 20, marginLeft: 20 }}
         onPress={() => {

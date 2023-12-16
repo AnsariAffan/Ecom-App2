@@ -69,11 +69,26 @@ export const getProductsFromLocalStorages = createAsyncThunk(
 );
 
 
-export const postDataToFireStore = createAsyncThunk(
-  "api/postDataToFireStore",
+export const postUserDataToFireStore = createAsyncThunk(
+  "api/postUserDataToFireStore",
   async (data) => {
     try {
-      const userCollection = collection(db, "userItems");
+      const userCollection = collection(db, "userDataBase");
+      const userSnapshot = addDoc(userCollection, data);
+      const userList = userSnapshot.docs.map((doc) => doc.data());
+  
+      return userList;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const postUserCartDataToFireStore = createAsyncThunk(
+  "api/postUserDataToFireStore",
+  async (data) => {
+    try {
+      const userCollection = collection(db, "userCartData");
       const userSnapshot = addDoc(userCollection, data);
       const userList = userSnapshot.docs.map((doc) => doc.data());
   
