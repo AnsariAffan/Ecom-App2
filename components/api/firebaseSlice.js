@@ -37,7 +37,7 @@ export const getUserCartDataFromFireBase = createAsyncThunk(
 
       // Filter user list based on the user's email
       const userData = userList.filter((e) => e.email === user.email);
-
+// console.log(userData)
       return userData;
 
 
@@ -46,6 +46,45 @@ export const getUserCartDataFromFireBase = createAsyncThunk(
     }
   }
 );
+
+
+export const deleteItemFromFireStore = createAsyncThunk(
+  "api/deleteItemFromFireStore",
+  async (itemId) => {
+    try {
+      console.log(itemId);
+      const auth = getAuth();
+      const user = auth.currentUser;
+
+      if (!user) {
+        // User not authenticated, handle as needed
+        throw new Error("User not authenticated");
+      }
+
+      const userCollection = collection(db, "userCartData");
+      const userSnapshot = await getDocs(userCollection);
+      const userList = userSnapshot.docs.map((doc) => doc.data());
+
+      // Find the item in the user's cart based on itemId
+      const itemToDelete = userList.find((item) => item.product.itemId === itemId);
+
+      if (!itemToDelete) {
+        // Item not found, handle as needed
+        throw new Error("Item not found in the user's cart");
+      }
+
+      // Delete the item from Firestore
+      const itemDocRef = doc(userCollection, itemToDelete.id);
+      await deleteDoc(itemDocRef);
+
+      return itemId; // Return the itemId to identify the deleted item in the Redux store
+    } catch (error) {
+      console.error("Error deleting item:", error);
+      throw error; // Return a rejected promise with the error message
+    }
+  }
+);
+
 
 export const userRagistration = createAsyncThunk(
   "api/userRagistration",

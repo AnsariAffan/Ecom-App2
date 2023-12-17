@@ -18,7 +18,7 @@ import {
 } from "./api/mySlice";
 import { useToast } from "react-native-toast-notifications";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getUserCartDataFromFireBase } from "./api/firebaseSlice";
+import { deleteItemFromFireStore, getUserCartDataFromFireBase } from "./api/firebaseSlice";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useIsFocused } from "@react-navigation/native";
 
@@ -40,12 +40,17 @@ const CartScreen = ({ navigation }) => {
   };
 
   const deleteItems = async (id) => {
+ 
+ console.log(id)
+
+    // const updatedProductList = productList.filter((item) => item.id !== id);
+
+    // await AsyncStorage.setItem("userCart", JSON.stringify(updatedProductList));
+
+
+    dispatch(deleteItemFromFireStore(id))
     dispatch(getPriceSum());
     dispatch(getProductCount());
-
-    const updatedProductList = productList.filter((item) => item.id !== id);
-
-    await AsyncStorage.setItem("userCart", JSON.stringify(updatedProductList));
     setRefresh(!refresh);
 
     notification.show("Item deleted successfully", {
@@ -55,10 +60,13 @@ const CartScreen = ({ navigation }) => {
       offset: 30,
       animationType: "slide-in",
     });
+navigation.navigate("CartScreen")
+    
   };
 
   useEffect(() => {
     getDataFromLocalStorage();
+    dispatch(getPriceSum());
   }, [navigation, refresh]);
 
   const auth = getAuth();
@@ -92,7 +100,7 @@ const CartScreen = ({ navigation }) => {
                 <Card
                   style={styles.card}
                   onPress={() =>
-                    navigation.navigate("SingleProductDetail", { id: item.id })
+                    navigation.navigate("SingleProductDetail", { id: item.product.id })
                   }
                 >
                   <Card.Content>
@@ -119,7 +127,7 @@ const CartScreen = ({ navigation }) => {
                       <Text style={styles.cardPrice}>
                         price ${item.product.price}
                       </Text>
-                      <TouchableOpacity onPress={() => deleteItems(item.id)}>
+                      <TouchableOpacity onPress={() => deleteItems(item.product.id)}>
                         <Card.Cover
                           source={require("../assets/DeleteButtonIcon.png")}
                           resizeMode="contain"

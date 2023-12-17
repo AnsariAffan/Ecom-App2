@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
+import { getAuth } from "firebase/auth";
 
 export const getAllProducts = createAsyncThunk("api/getAllData", async () => {
   try {
@@ -102,17 +103,28 @@ export const postUserCartDataToFireStore = createAsyncThunk(
 
 export const getPriceSum = createAsyncThunk("api/getgetPriceSum", async () => {
   try {
-    const data = await AsyncStorage.getItem("userCart");
-    const convertedData = JSON.parse(data);
+    const auth = getAuth();
+      const user = auth.currentUser;
 
-    // create a variable for the sum and initialize it
-    let sum = 0;
+      if (!user) {
+        // User not authenticated, handle as needed
+        return rejectWithValue("User not authenticated");
+      }
 
-    // iterate over each item in the array
-    for (let i = 0; i < convertedData.length; i++) {
-      sum += convertedData[i].price;
-    }
-    return sum;
+      const userCollection = collection(db, "userCartData");
+      const userSnapshot = await getDocs(userCollection);
+      const userList = userSnapshot.docs.map((doc) => doc.data());
+
+      // Filter user list based on the user's email
+      const userData = userList.filter((e) => e.email === user.email);
+
+      // Calculate the sum of all product prices
+      const totalPrice = userData.reduce((sum, item) => sum + item.product.price, 0);
+
+      // You can log the total price or return it as needed
+      console.log("Total Price:", totalPrice);
+
+      return totalPrice;
   } catch (error) {
     console.log(error);
   }
