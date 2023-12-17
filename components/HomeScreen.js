@@ -33,6 +33,8 @@ function HomeScreen({ navigation }) {
   const products = useSelector((state) => {
     return state.mySlice.products;
   });
+
+
   const loading = useSelector((state) => {
     return state.mySlice.loading;
   });
@@ -146,15 +148,10 @@ console.log(product)
     setProductsFound(filtered?.length > 0);
   };
 
-  const WishList = (id) => {
-
-
-    dispatch(userWishList(product));
-   
-    console.log(product)
-   
-    // navigation.navigate("WishList", { forceReload: true });
-    // setRefresh(refresh);
+  const WishList = async (id) => {
+    dispatch(userWishList(id));
+    navigation.navigate("WishList", { forceReload: true });
+    setRefresh(refresh);
   };
 
   useEffect(() => {
@@ -211,7 +208,7 @@ console.log(product)
               color="red"
               style={styles.icon}
               onPress={() => {
-                WishList(item.id,product);
+                WishList(item.id);
               }}
             />
             <MaterialIcons

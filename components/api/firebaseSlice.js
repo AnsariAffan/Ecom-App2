@@ -180,11 +180,14 @@ export const userSignout = createAsyncThunk("api/userSignout", async (auth) => {
   }
 });
 
-export const userWishList = createAsyncThunk("api/userWishList",async (data)=>{
+export const userWishList = createAsyncThunk("api/userWishList",async (id)=>{
   try {
 
+
+    const myData = await axios.get(`https://fakestoreapi.com/products/${id}`);
+    
     const userCollection = collection(db, "userWishList");
-    const userSnapshot = await addDoc(userCollection, data);
+    const userSnapshot = await addDoc(userCollection, myData.data);
     const userList = userSnapshot.docs.map((doc) => doc.data());
 
     return userList;
@@ -193,9 +196,7 @@ export const userWishList = createAsyncThunk("api/userWishList",async (data)=>{
   }
 })
 
-export const userOders = createAsyncThunk("api/userOders",async ()=>{
 
-})
 
 export const firebaseslice = createSlice({
   name: "firebase",
@@ -208,7 +209,8 @@ export const firebaseslice = createSlice({
     LogginUser: [],
     userCarts: [],
     count: 0,
-    myWishList:[]
+    myWishList:[],
+
   },
 
   extraReducers: (builders) => {
@@ -240,6 +242,9 @@ export const firebaseslice = createSlice({
       state.error = action.payload;
       state.loading = false;
     });
+
+
+
 
   },
 });
