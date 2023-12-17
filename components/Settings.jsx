@@ -24,7 +24,7 @@ const Settings = ({ navigation }) => {
   };
 
   const loading = useSelector((state) => {
-    return state.firebaseslice.loading;
+    return state.mySlice.loading;
   });
 
   const isFocused = useIsFocused();

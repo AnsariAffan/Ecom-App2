@@ -33,7 +33,7 @@ export default function Login({ navigation }) {
   });
   const dispatch = useDispatch();
   const loading = useSelector((state) => {
-    return state.firebaseslice.loading;
+    return state.mySlice.loading;
   });
 
   const handleInputChange = (field, value) => {

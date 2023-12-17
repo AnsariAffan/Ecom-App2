@@ -8,6 +8,8 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  query,
+  where,
 } from "firebase/firestore";
 
 import { get, getDatabase, ref, set } from "firebase/database";
@@ -18,6 +20,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import { useDispatch } from "react-redux";
 
 export const getUserCartDataFromFireBase = createAsyncThunk(
   "api/getUserCartDataFromFireBase",
@@ -50,34 +53,45 @@ export const getUserCartDataFromFireBase = createAsyncThunk(
 
 export const deleteItemFromFireStore = createAsyncThunk(
   "api/deleteItemFromFireStore",
-  async (itemId) => {
+  async (id) => {
     try {
-      console.log(itemId);
-      const auth = getAuth();
-      const user = auth.currentUser;
 
-      if (!user) {
-        // User not authenticated, handle as needed
-        throw new Error("User not authenticated");
-      }
+      const docRef = doc(db, "userCartData", id)
+      await deleteDoc(docRef)
+      // console.log(itemId);
+      // const auth = getAuth();
+      // const user = auth.currentUser;
 
-      const userCollection = collection(db, "userCartData");
-      const userSnapshot = await getDocs(userCollection);
-      const userList = userSnapshot.docs.map((doc) => doc.data());
+      // if (!user) {
+      //   // User not authenticated, handle as needed
+      //   throw new Error("User not authenticated");
+      // }
 
-      // Find the item in the user's cart based on itemId
-      const itemToDelete = userList.find((item) => item.product.itemId === itemId);
+      // const userCollection = collection(db, "userCartData");
+      // deleteDoc(doc(db, "userCartData", itemId));
 
-      if (!itemToDelete) {
-        // Item not found, handle as needed
-        throw new Error("Item not found in the user's cart");
-      }
+      // // Create a query to find documents with the specified itemId
+      // const q = query(userCollection, where("product.itemId", "==", itemId));
+     
+      // const userSnapshot = await getDocs(q);
 
-      // Delete the item from Firestore
-      const itemDocRef = doc(userCollection, itemToDelete.id);
-      await deleteDoc(itemDocRef);
 
-      return itemId; // Return the itemId to identify the deleted item in the Redux store
+      // if (userSnapshot.empty) {
+      //   // No matching documents found, handle as needed
+      //   throw new Error("No documents found with the specified itemId");
+      // }
+
+      // // Loop through the documents and delete each one
+      // const deletePromises = userSnapshot.docs.map(async (doc) => {
+      //   console.log(deletePromises)
+      //   await deleteDoc(userCollection,itemId);
+      //   console.log(`Document with itemId ${itemId} successfully deleted!`);
+      // });
+
+      // // Wait for all delete operations to complete
+      // await Promise.all(deletePromises);
+
+      // return itemId; // Return the itemId to identify the deleted item
     } catch (error) {
       console.error("Error deleting item:", error);
       throw error; // Return a rejected promise with the error message
@@ -166,6 +180,23 @@ export const userSignout = createAsyncThunk("api/userSignout", async (auth) => {
   }
 });
 
+export const userWishList = createAsyncThunk("api/userWishList",async (data)=>{
+  try {
+
+    const userCollection = collection(db, "userWishList");
+    const userSnapshot = await addDoc(userCollection, data);
+    const userList = userSnapshot.docs.map((doc) => doc.data());
+
+    return userList;
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+export const userOders = createAsyncThunk("api/userOders",async ()=>{
+
+})
+
 export const firebaseslice = createSlice({
   name: "firebase",
 
@@ -177,6 +208,7 @@ export const firebaseslice = createSlice({
     LogginUser: [],
     userCarts: [],
     count: 0,
+    myWishList:[]
   },
 
   extraReducers: (builders) => {
@@ -193,6 +225,22 @@ export const firebaseslice = createSlice({
       state.error = action.payload;
       state.loading = false;
     });
+
+
+    //wishList
+    builders.addCase(userWishList.pending, (state, action) => {
+      state.loading = true;
+    });
+    builders.addCase(userWishList.fulfilled, (state, action) => {
+      state.myWishList = action.payload;
+      state.loading = false;
+    });
+    builders.addCase(userWishList.rejected, (state, action) => {
+      // I repeated fulfilled
+      state.error = action.payload;
+      state.loading = false;
+    });
+
   },
 });
 

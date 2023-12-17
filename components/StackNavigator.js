@@ -15,6 +15,8 @@ import { getProductCount } from "./api/mySlice";
 import Paypal from "./Paypal";
 import Map from "./Map";
 import { getUserCartDataFromFireBase } from "./api/firebaseSlice";
+import Oders from "./Oders";
+import WishList from "./WishList";
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -35,6 +37,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Ragistration" component={Ragistration} />
       <HomeStack.Screen name="AboutPage" component={AboutPage} />
       <HomeStack.Screen name="Paypal" component={Paypal} />
+      <HomeStack.Screen name="WishList" component={WishList} />
 
       {/*   
       <HomeStack.Screen
@@ -55,10 +58,8 @@ const StackNavigator = () => {
   });
 
   useEffect(() => {
-    dispatch(getUserCartDataFromFireBase())
+    dispatch(getUserCartDataFromFireBase());
   }, []);
-
- 
 
   return (
     <NavigationContainer>
@@ -95,6 +96,19 @@ const StackNavigator = () => {
           }}
           name="CartScreen"
           component={CartScreen}
+        />
+
+        <Tab.Screen
+          options={{
+            headerShown: true,
+            tabBarLabel: "My Oders",
+            tabBarBadge: count, // Update the tabBarBadge
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesome5 name={"box"} color={color} size={size} />
+            ),
+          }}
+          name="My Oders"
+          component={Oders}
         />
 
         <Tab.Screen

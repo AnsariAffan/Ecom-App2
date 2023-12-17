@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -21,12 +19,13 @@ import {
   getAllProducts,
   getProductCount,
   getProductsCategory,
+  getSingalProduct,
   postDataToFireStore,
 } from "./api/mySlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "react-native-toast-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getUserCartDataFromFireBase } from "./api/firebaseSlice";
+import { getUserCartDataFromFireBase, userWishList } from "./api/firebaseSlice";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -35,8 +34,13 @@ function HomeScreen({ navigation }) {
     return state.mySlice.products;
   });
   const loading = useSelector((state) => {
-    return state.firebaseslice.loading;
+    return state.mySlice.loading;
   });
+
+  const product = useSelector((state) => {
+    return state.mySlice.product;
+  });
+console.log(product)
   const [searchQuery, setSearchQuery] = useState("");
   const [count, setCount] = useState(0);
   const [refresh, setRefresh] = useState(false);
@@ -142,22 +146,31 @@ function HomeScreen({ navigation }) {
     setProductsFound(filtered?.length > 0);
   };
 
+  const WishList = (id) => {
+
+
+    dispatch(userWishList(product));
+   
+    console.log(product)
+   
+    // navigation.navigate("WishList", { forceReload: true });
+    // setRefresh(refresh);
+  };
+
   useEffect(() => {
     dispatch(getProductCount());
     dispatch(getAllProducts());
     dispatch(getProductsCategory());
     getProductData();
     getDataFromLocalStorage();
-    
-  }, [count, refresh,isFocused]);
+
+  }, [count, refresh, isFocused]);
 
   const getDataFromLocalStorage = async () => {
     const data = await AsyncStorage.getItem("userCart");
     const convertedData = JSON.parse(data);
     setCount(convertedData?.length);
   };
-
-  
 
   const auth = getAuth();
   const [user, setuser] = useState();
@@ -197,6 +210,9 @@ function HomeScreen({ navigation }) {
               size={24}
               color="red"
               style={styles.icon}
+              onPress={() => {
+                WishList(item.id,product);
+              }}
             />
             <MaterialIcons
               name="local-offer"
@@ -222,7 +238,6 @@ function HomeScreen({ navigation }) {
     <View style={styles.container}>
       {user == null ? null : (
         <>
-        
           <Text style={{ fontSize: 20, fontWeight: "700", padding: 5 }}>
             Hello, {user.email}
           </Text>
@@ -247,9 +262,20 @@ function HomeScreen({ navigation }) {
         placeholder="Search Products"
         right={<TextInput.Icon name="card-search" />}
       />
-      <Text style={{ fontSize: 20, fontWeight: 500, marginBottom: 5 }}>
-        Top Categories
-      </Text>
+      <View style={{ display: "flex", flexDirection: "row" }}>
+        <Text style={{ fontSize: 20, fontWeight: 500, marginBottom: 5 }}>
+          Top Categories
+        </Text>
+        <AntDesign
+          name="hearto"
+          size={24}
+          color="red"
+          style={{ paddingLeft: 190 }}
+          onPress={() => {
+            navigation.navigate("WishList");
+          }}
+        />
+      </View>
 
       <ShowCategory />
 

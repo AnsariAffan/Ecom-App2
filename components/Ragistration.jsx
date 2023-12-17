@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, Image } from "react-native";
 import { TextInput, Button, Title, Text, ActivityIndicator } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { getDataFromFireBase, userRagistration } from "./api/firebaseSlice";
+import {  userRagistration } from "./api/firebaseSlice";
 import { useEffect } from "react";
 import { postUserDataToFireStore } from "./api/mySlice";
 
@@ -16,7 +16,7 @@ const Ragistration = ({ navigation }) => {
   });
 
   const loading = useSelector((state) => {
-    return state.firebaseslice.loading;
+    return state.mySlice.loading;
   });
   const dispatch = useDispatch();
 
@@ -29,13 +29,12 @@ const Ragistration = ({ navigation }) => {
 
   const handleSubmit = async () => {
     // console.log("test")
-
     dispatch(userRagistration(formData));
     dispatch(postUserDataToFireStore(formData))
   };
 
   useEffect(() => {
-    dispatch(getDataFromFireBase());
+
 
   }, []);
 
