@@ -45,46 +45,49 @@ function SingleProductDetail({ route, navigation }) {
   useEffect(() => {
         dispatch(getProductCount())
         dispatch(getSingalProduct(id));
-      }, [id]);
+        dispatch(postUserCartDataToFireStore())
+      }, [id,isFocused]);
 
+      useEffect(() => {
+    
+      }, []);
+
+ 
       const handleAddToCart = async (product, navigation) => {
         dispatch(postUserCartDataToFireStore({product,email:user.email}))
             dispatch(getProductCount())
+            navigation.navigate('CartScreen', { forceReload: true });
+            setRefresh(refresh);
           
             // console.log(dispatch(getProductCount()))
-            let existingCart = await AsyncStorage.getItem("userCart");
-            if (!existingCart) {
-              existingCart = [];
-            } else {
-              existingCart = JSON.parse(existingCart);
-            }
+            // let existingCart = await AsyncStorage.getItem("userCart");
+            // if (!existingCart) {
+            //   existingCart = [];
+            // } else {
+            //   existingCart = JSON.parse(existingCart);
+            // }
         
-            const itemIndex = existingCart.findIndex(
-              (cartItem) => cartItem.id === product.id
-            );
+            // const itemIndex = existingCart.findIndex(
+            //   (cartItem) => cartItem.id === product.id
+            // );
         
-            if (itemIndex > -1) {
-              window.alert("Item is already added to the cart");
-            } else {
-              existingCart.push(product);
-              notification.show("Cart added successfully",{
-                type: "normal",
-                placement: "bottom",
-                duration: 2000,
-                offset: 30,
-                animationType: "slide-in",
-              })
-            }
+            // if (itemIndex > -1) {
+            //   window.alert("Item is already added to the cart");
+            // } else {
+            //   existingCart.push(product);
+            //   notification.show("Cart added successfully",{
+            //     type: "normal",
+            //     placement: "bottom",
+            //     duration: 2000,
+            //     offset: 30,
+            //     animationType: "slide-in",
+            //   })
+            // }
         
-            setCart(existingCart);
+            // setCart(existingCart);
         
-            await AsyncStorage.setItem("userCart", JSON.stringify(existingCart));
-            await navigation.reset({
-              index: 0,
-              routes: [{ name: "CartScreen", params: { data: "Reloaded" } }],
-            });
-           
-            setRefresh(!refresh);
+        
+          
           };
 
 

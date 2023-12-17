@@ -148,8 +148,8 @@ function HomeScreen({ navigation }) {
     dispatch(getProductsCategory());
     getProductData();
     getDataFromLocalStorage();
-    dispatch(getUserCartDataFromFireBase())
-  }, [count, refresh]);
+    
+  }, [count, refresh,isFocused]);
 
   const getDataFromLocalStorage = async () => {
     const data = await AsyncStorage.getItem("userCart");

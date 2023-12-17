@@ -20,14 +20,27 @@ import {
 } from "firebase/auth";
 
 export const getUserCartDataFromFireBase = createAsyncThunk(
-  "api/getDataFromFireBase",
+  "api/getUserCartDataFromFireBase",
   async () => {
     try {
+      const auth = getAuth();
+      const user = auth.currentUser;
+
+      if (!user) {
+        // User not authenticated, handle as needed
+        return rejectWithValue("User not authenticated");
+      }
+
       const userCollection = collection(db, "userCartData");
       const userSnapshot = await getDocs(userCollection);
       const userList = userSnapshot.docs.map((doc) => doc.data());
-      // console.log(userList);
-      return userList;
+
+      // Filter user list based on the user's email
+      const userData = userList.filter((e) => e.email === user.email);
+
+      return userData;
+
+
     } catch (error) {
       console.log(error);
     }
@@ -46,8 +59,6 @@ export const userRagistration = createAsyncThunk(
           console.log(user);
           window.alert("user ragistered successfully");
 
-          
-         
           // ...
         })
         .catch((error) => {
@@ -57,34 +68,28 @@ export const userRagistration = createAsyncThunk(
           // console.log(errorMessage);
           window.alert(errorMessage.slice(9, 50));
         });
-
-
-
-
-
     } catch (error) {
       console.log(error);
     }
   }
 );
 
-export const userRagistrationIntoRealTimeStorage = createAsyncThunk("api/userRagistrationIntoRealTimeStorage",(data)=>{
-
-  const writeUserData=(data)=> {
-    const db = getDatabase();
-    set(ref(db, 'users/' + 1), {
-      email: data.email,
-      password: data,password,
-   
-    });
+export const userRagistrationIntoRealTimeStorage = createAsyncThunk(
+  "api/userRagistrationIntoRealTimeStorage",
+  (data) => {
+    const writeUserData = (data) => {
+      const db = getDatabase();
+      set(ref(db, "users/" + 1), {
+        email: data.email,
+        password: data,
+        password,
+      });
+    };
+    writeUserData(data);
   }
-  writeUserData(data)
-  }
-)
+);
 
 export const userLogin = createAsyncThunk("api/userLogin", async (data) => {
-
-
   const auth = getAuth();
   signInWithEmailAndPassword(auth, data.email, data.password)
     .then((userCredential) => {
@@ -94,7 +99,6 @@ export const userLogin = createAsyncThunk("api/userLogin", async (data) => {
       // console.log(user);
       window.alert("user logged in successfully");
 
-   
       return user;
     })
     .catch((error) => {
@@ -114,7 +118,6 @@ export const userSignout = createAsyncThunk("api/userSignout", async (auth) => {
         // console.log("Sign-out successful");
         // console.log(auth);
         window.alert("Sign-out successful");
-      
       })
       .catch((error) => {
         // An error happened.
@@ -123,12 +126,6 @@ export const userSignout = createAsyncThunk("api/userSignout", async (auth) => {
     console.log(error);
   }
 });
-
-
-    
-
-
-
 
 export const firebaseslice = createSlice({
   name: "firebase",
@@ -139,18 +136,17 @@ export const firebaseslice = createSlice({
     token: [],
     loading: false,
     LogginUser: [],
-    userCarts:[]
-  
+    userCarts: [],
+    count: 0,
   },
 
   extraReducers: (builders) => {
-
-    
     builders.addCase(getUserCartDataFromFireBase.pending, (state, action) => {
       state.loading = true;
     });
     builders.addCase(getUserCartDataFromFireBase.fulfilled, (state, action) => {
       state.userCarts = action.payload;
+      state.count = action.payload.length;
       state.loading = false;
     });
     builders.addCase(getUserCartDataFromFireBase.rejected, (state, action) => {
@@ -158,10 +154,6 @@ export const firebaseslice = createSlice({
       state.error = action.payload;
       state.loading = false;
     });
-
-
-    
-
   },
 });
 

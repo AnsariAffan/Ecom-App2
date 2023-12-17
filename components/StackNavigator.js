@@ -1,5 +1,5 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import React, { useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getProductCount } from "./api/mySlice";
 import Paypal from "./Paypal";
 import Map from "./Map";
+import { getUserCartDataFromFireBase } from "./api/firebaseSlice";
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -21,7 +22,6 @@ const HomeStack = createStackNavigator();
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator>
-      
       <HomeStack.Screen
         options={{ headerShown: false }}
         name="HomeScreens"
@@ -34,9 +34,9 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Login" component={Login} />
       <HomeStack.Screen name="Ragistration" component={Ragistration} />
       <HomeStack.Screen name="AboutPage" component={AboutPage} />
-      <HomeStack.Screen  name="Paypal" component={Paypal} />
-  
-{/*   
+      <HomeStack.Screen name="Paypal" component={Paypal} />
+
+      {/*   
       <HomeStack.Screen
         // options={{ headerShown: true  }}
         name="CartScreen"
@@ -49,14 +49,16 @@ function HomeStackScreen() {
 
 const StackNavigator = () => {
   const dispatch = useDispatch();
+
   const count = useSelector((state) => {
-    return state.mySlice.count;
+    return state.firebaseslice.count;
   });
-  // console.log(count);
 
   useEffect(() => {
-    dispatch(getProductCount());
-  }, [count]);
+    dispatch(getUserCartDataFromFireBase())
+  }, []);
+
+ 
 
   return (
     <NavigationContainer>
@@ -84,7 +86,7 @@ const StackNavigator = () => {
         <Tab.Screen
           options={{
             headerShown: true,
-            
+
             tabBarLabel: "Cart",
             tabBarBadge: count, // Update the tabBarBadge
             tabBarIcon: ({ color, size }) => (

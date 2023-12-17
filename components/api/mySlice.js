@@ -1,10 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 
-export const getAllProducts =  createAsyncThunk("api/getAllData", async () => {
+export const getAllProducts = createAsyncThunk("api/getAllData", async () => {
   try {
     const myData = await axios("https://fakestoreapi.com/products");
     // console.log(myData.data);
@@ -46,9 +46,11 @@ export const getProductCount = createAsyncThunk(
   "api/getProductCount",
   async () => {
     try {
-      const data = await AsyncStorage.getItem("userCart");
-      const convertedData = JSON.parse(data);
-      return convertedData.length;
+
+      const userCollection = collection(db, "userCartData");
+      const userSnapshot = await getDocs(userCollection);
+      const userList = userSnapshot.docs.map((doc) => doc.data());
+      return userList;
     } catch (error) {
       console.log(error);
     }
@@ -68,15 +70,14 @@ export const getProductsFromLocalStorages = createAsyncThunk(
   }
 );
 
-
 export const postUserDataToFireStore = createAsyncThunk(
   "api/postUserDataToFireStore",
   async (data) => {
     try {
       const userCollection = collection(db, "userDataBase");
-      const userSnapshot = addDoc(userCollection, data);
+      const userSnapshot = await addDoc(userCollection, data);
       const userList = userSnapshot.docs.map((doc) => doc.data());
-  
+
       return userList;
     } catch (error) {
       console.log(error);
@@ -91,7 +92,7 @@ export const postUserCartDataToFireStore = createAsyncThunk(
       const userCollection = collection(db, "userCartData");
       const userSnapshot = addDoc(userCollection, data);
       const userList = userSnapshot.docs.map((doc) => doc.data());
-  
+
       return userList;
     } catch (error) {
       console.log(error);
@@ -132,8 +133,6 @@ export const mySlice = createSlice({
   },
 
   extraReducers: (builders) => {
-
-
     // //for getAllProducts
     builders.addCase(getAllProducts.pending, (state, { payload }) => {
       state.loading = true;
@@ -147,7 +146,6 @@ export const mySlice = createSlice({
       state.loading = false;
       state.error = payload;
     });
-
 
     //for getProductsCategory
     builders.addCase(getProductsCategory.pending, (state, { payload }) => {
@@ -163,7 +161,6 @@ export const mySlice = createSlice({
       state.error = payload;
     });
 
-
     //for getSingalProduct
     builders.addCase(getSingalProduct.pending, (state, { payload }) => {
       state.loading = true;
@@ -178,44 +175,41 @@ export const mySlice = createSlice({
       state.error = payload;
     });
 
-
     //getProductCount
     builders.addCase(getProductCount.fulfilled, (state, { payload }) => {
       state.count = payload;
       state.loading = false;
     });
 
-
     //getProductsFromLocalStorage
     builders.addCase(
-      getProductsFromLocalStorages.pending,(state, { payload }) => {
+      getProductsFromLocalStorages.pending,
+      (state, { payload }) => {
         state.loading = true;
       }
     );
     builders.addCase(
-      getProductsFromLocalStorages.fulfilled,(state, { payload }) => {
+      getProductsFromLocalStorages.fulfilled,
+      (state, { payload }) => {
         state.product = payload;
         state.loading = false;
       }
     );
     builders.addCase(
-      getProductsFromLocalStorages.rejected,(state, { payload }) => {
+      getProductsFromLocalStorages.rejected,
+      (state, { payload }) => {
         // I repeated fulfilled
         state.loading = false;
         state.error = payload;
       }
     );
 
-
     //getPriceSum
     builders.addCase(getPriceSum.fulfilled, (state, { payload }) => {
       state.priceCount = payload;
       state.loading = false;
     });
-
-    
   },
 });
-
 
 export default mySlice.reducer;

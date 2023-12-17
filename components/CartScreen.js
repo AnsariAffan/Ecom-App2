@@ -18,48 +18,35 @@ import {
 } from "./api/mySlice";
 import { useToast } from "react-native-toast-notifications";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Paypal from "./Paypal";
 import { getUserCartDataFromFireBase } from "./api/firebaseSlice";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useIsFocused } from "@react-navigation/native";
 
 const CartScreen = ({ navigation }) => {
-  const [productList, setProductList] = useState([]);
-  const [priceSum, setpriceSum] = useState();
   const [refresh, setRefresh] = useState(false);
   const dispatch = useDispatch();
   const notification = useToast();
-  const count = useSelector((state) => {
-    return state.mySlice.count;
-  });
 
-  const userCarts = useSelector((state) => {
-    return state.firebaseslice.userCarts;
-  });
-  const priceCount = useSelector((state) => {
-    return state.mySlice.priceCount;
-  });
+  const userCarts = useSelector((state) => state.firebaseslice.userCarts);
+  const count = useSelector((state) => state.firebaseslice.count);
+  const priceCount = useSelector((state) => state.mySlice.priceCount);
 
   const getDataFromLocalStorage = async () => {
     const data = await AsyncStorage.getItem("userCart");
-    const convertedData = JSON.parse(data);
-    setProductList(convertedData);
+    const convertedData = JSON.parse(data) || [];
+    dispatch(getProductsFromLocalStorages());
+    dispatch(getProductCount());
+    return convertedData;
   };
 
   const deleteItems = async (id) => {
-    // showNotificationDailogBox()
     dispatch(getPriceSum());
     dispatch(getProductCount());
 
-    const index = productList.findIndex((item) => item.id === id);
-    // console.log(index);
+    const updatedProductList = productList.filter((item) => item.id !== id);
 
-    if (index > -1) {
-      productList.splice(index, 1); // Remove the item at 'index'
-      console.log(productList);
-      await AsyncStorage.setItem("userCart", JSON.stringify(productList));
-      setRefresh(!refresh);
-    }
+    await AsyncStorage.setItem("userCart", JSON.stringify(updatedProductList));
+    setRefresh(!refresh);
 
     notification.show("Item deleted successfully", {
       type: "danger",
@@ -71,52 +58,28 @@ const CartScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    dispatch(getPriceSum());
-    dispatch(getProductsFromLocalStorages());
     getDataFromLocalStorage();
-    dispatch(getProductCount());
-    getUserCarts()
-    dispatch(getUserCartDataFromFireBase())
-  }, [navigation, refresh, priceSum, priceCount]);
-
+  }, [navigation, refresh]);
 
   const auth = getAuth();
   const [userEmail, setUserEmail] = useState();
   const isFocused = useIsFocused();
+
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (isFocused && user) {
-        // console.log(user);
         setUserEmail(user.email);
-        return user;
       } else {
         setUserEmail(null);
       }
     });
+
+    return () => unsubscribe();
   }, [isFocused]);
 
   useEffect(() => {
-
-    dispatch(getUserCartDataFromFireBase())
-  }, []);
-  
-
-
-const getUserCarts =()=>{
-console.log(userEmail)
-console.log(userCarts)
-
-userCarts.filter((e)=>{
-  if(userEmail == e.email){
-    console.log(e)
-    return e
-  }
-})
-
-}
-
-
-
+    dispatch(getUserCartDataFromFireBase());
+  }, [isFocused, refresh]);
 
   return (
     <ScrollView>
@@ -124,7 +87,7 @@ userCarts.filter((e)=>{
         <View style={styles.container}>
           {count > 0 ? (
             <FlatList
-              data={productList}
+              data={userCarts}
               renderItem={({ item }) => (
                 <Card
                   style={styles.card}
@@ -135,7 +98,7 @@ userCarts.filter((e)=>{
                   <Card.Content>
                     <View style={{ display: "flex", flexDirection: "row" }}>
                       <Card.Cover
-                        source={{ uri: item.image }}
+                        source={{ uri: item.product.image }}
                         resizeMode="contain"
                         style={{
                           backgroundColor: "transparent",
@@ -143,7 +106,7 @@ userCarts.filter((e)=>{
                           width: 50,
                         }}
                       />
-                      <Text style={styles.cardTitle}>{item.title}</Text>
+                      <Text style={styles.cardTitle}>{item.product.title}</Text>
                     </View>
 
                     <View
@@ -153,7 +116,9 @@ userCarts.filter((e)=>{
                         justifyContent: "flex-end",
                       }}
                     >
-                      <Text style={styles.cardPrice}>price ${item.price}</Text>
+                      <Text style={styles.cardPrice}>
+                        price ${item.product.price}
+                      </Text>
                       <TouchableOpacity onPress={() => deleteItems(item.id)}>
                         <Card.Cover
                           source={require("../assets/DeleteButtonIcon.png")}
@@ -169,7 +134,7 @@ userCarts.filter((e)=>{
                   </Card.Content>
                 </Card>
               )}
-              keyExtractor={(item, index) => index.toString()}
+ 
               numColumns={1}
             />
           ) : (
@@ -177,18 +142,13 @@ userCarts.filter((e)=>{
           )}
 
           <Text style={{ fontSize: 20, textAlign: "right" }}>
-            SubTota: {priceCount}{" "}
+            SubTotal: {priceCount}
           </Text>
-
-          <Paypal />
         </View>
       </SafeAreaView>
     </ScrollView>
   );
 };
-
-const { width, height } = Dimensions.get("window");
-// console.log(height);
 
 const styles = StyleSheet.create({
   container: {
