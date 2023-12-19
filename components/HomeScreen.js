@@ -25,7 +25,17 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "react-native-toast-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getUserCartDataFromFireBase, userWishList } from "./api/firebaseSlice";
+import {
+  getUserCartDataFromFireBase,
+  getUserWishList,
+  userWishList,
+} from "./api/firebaseSlice";
+import {
+  HeartFilled,
+  HeartOutlined,
+  StarFilled,
+  StarOutlined,
+} from "@ant-design/icons";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -34,7 +44,6 @@ function HomeScreen({ navigation }) {
     return state.mySlice.products;
   });
 
-
   const loading = useSelector((state) => {
     return state.mySlice.loading;
   });
@@ -42,13 +51,23 @@ function HomeScreen({ navigation }) {
   const product = useSelector((state) => {
     return state.mySlice.product;
   });
-console.log(product)
+  console.log(product);
   const [searchQuery, setSearchQuery] = useState("");
   const [count, setCount] = useState(0);
   const [refresh, setRefresh] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [heart, setheart] = useState(true);
 
+  const heartFill =()=>{
+    setheart(!false)
+  }
+
+
+  const myWishList = useSelector((state) => {
+    return state.firebaseslice.myWishList;
+  });
+console.log(myWishList)
   const notification = useToast();
   const dispatch = useDispatch();
 
@@ -160,7 +179,7 @@ console.log(product)
     dispatch(getProductsCategory());
     getProductData();
     getDataFromLocalStorage();
-
+    dispatch(getUserWishList());
   }, [count, refresh, isFocused]);
 
   const getDataFromLocalStorage = async () => {
@@ -202,7 +221,7 @@ console.log(product)
           </Text>
           <Text style={styles.productPrice}>Price: ${item.price}</Text>
           <View style={styles.productIcons}>
-            <AntDesign
+            {/* <AntDesign
               name="hearto"
               size={24}
               color="red"
@@ -210,7 +229,23 @@ console.log(product)
               onPress={() => {
                 WishList(item.id);
               }}
+            /> */}
+
+            {item.id?
+            <HeartFilled
+              onPress={() => {
+                WishList(item.id);
+              }}
+              style={{ color: "red", fontSize: 24 }}
             />
+            :
+            <HeartOutlined
+              onPress={() => {
+                WishList(item.id);
+              }}
+              style={{ fontSize: 24 }}
+            />
+            }
             <MaterialIcons
               name="local-offer"
               size={24}
@@ -363,9 +398,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 8,
   },
-  icon: {
-    marginRight: 8,
-  },
+  icon: {},
   columnWrapper: {
     justifyContent: "space-between",
   },
