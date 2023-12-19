@@ -168,6 +168,7 @@ function SingleProductDetail({ route, navigation }) {
                     backgroundColor: "skyblue",
                     width: 30,
                     borderRadius: 5,
+                    height:20
                   }}
                 >
                   <Text style={{ fontWeight: 700 }}>-</Text>
@@ -184,6 +185,7 @@ function SingleProductDetail({ route, navigation }) {
                     backgroundColor: "skyblue",
                     width: 30,
                     borderRadius: 5,
+                    height:20
                   }}
                 >
                   <Text style={{ fontWeight: 700 }}>+</Text>
