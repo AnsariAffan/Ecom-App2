@@ -67,7 +67,13 @@ function HomeScreen({ navigation }) {
   const myWishList = useSelector((state) => {
     return state.firebaseslice.myWishList;
   });
+  // console.log(myWishList[2])
+
+const getmyWishListId= async()=>{
 console.log(myWishList)
+console.log("test")
+}
+
   const notification = useToast();
   const dispatch = useDispatch();
 
@@ -86,6 +92,10 @@ console.log(myWishList)
       getCatagory(selectedCategory);
     }
   }, [selectedCategory]);
+
+
+
+
 
   const getCatagory = async (category) => {
     try {
@@ -180,7 +190,13 @@ console.log(myWishList)
     getProductData();
     getDataFromLocalStorage();
     dispatch(getUserWishList());
+    getmyWishListId()
+   
   }, [count, refresh, isFocused]);
+  useEffect(() => {
+    dispatch(getUserWishList());
+    getmyWishListId()
+  }, []);
 
   const getDataFromLocalStorage = async () => {
     const data = await AsyncStorage.getItem("userCart");
