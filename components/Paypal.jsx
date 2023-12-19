@@ -8,7 +8,7 @@ import queryString from "query-string";
 import { useDispatch, useSelector } from "react-redux";
 import { getSingalProduct } from "./api/mySlice";
 
-const Paypal = ({ productID }) => {
+const Paypal = ({ productID ,productQuantity}) => {
   // console.log(productID)
   const product = useSelector((state) => {
     return state.mySlice.product;
@@ -26,17 +26,17 @@ const Paypal = ({ productID }) => {
             quantity: "1",
             unit_amount: {
               currency_code: "USD",
-              value: product.price,
+              value: product.price*productQuantity,
             },
           },
         ],
         amount: {
           currency_code: "USD",
-          value: product.price,
+          value: product.price*productQuantity,
           breakdown: {
             item_total: {
               currency_code: "USD",
-              value: product.price,
+              value: product.price*productQuantity,
             },
           },
         },

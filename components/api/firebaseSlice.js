@@ -189,6 +189,21 @@ export const userWishList = createAsyncThunk("api/userWishList",async (id)=>{
     const userCollection = collection(db, "userWishList");
     const userSnapshot = await addDoc(userCollection, myData.data);
     const userList = userSnapshot.docs.map((doc) => doc.data());
+    
+
+    return userList;
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+
+export const getUserWishList = createAsyncThunk("api/getUserWishList",async ()=>{
+  try {
+
+    const userCollection = collection(db, "userWishList");
+    const userSnapshot = await getDocs(userCollection);
+    const userList = userSnapshot.docs.map((doc) => doc.data());
 
     return userList;
   } catch (error) {
@@ -229,15 +244,15 @@ export const firebaseslice = createSlice({
     });
 
 
-    //wishList
-    builders.addCase(userWishList.pending, (state, action) => {
+    //user wishList
+    builders.addCase(getUserWishList.pending, (state, action) => {
       state.loading = true;
     });
-    builders.addCase(userWishList.fulfilled, (state, action) => {
+    builders.addCase(getUserWishList.fulfilled, (state, action) => {
       state.myWishList = action.payload;
       state.loading = false;
     });
-    builders.addCase(userWishList.rejected, (state, action) => {
+    builders.addCase(getUserWishList.rejected, (state, action) => {
       // I repeated fulfilled
       state.error = action.payload;
       state.loading = false;

@@ -269,7 +269,7 @@ console.log(product)
           color="red"
           style={{ paddingLeft: 190 }}
           onPress={() => {
-            navigation.navigate("WishList");
+            navigation.navigate("WishList", { forceReload: true });
           }}
         />
       </View>
