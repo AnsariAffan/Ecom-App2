@@ -67,12 +67,9 @@ function HomeScreen({ navigation }) {
   const myWishList = useSelector((state) => {
     return state.firebaseslice.myWishList;
   });
-  // console.log(myWishList[2])
+   console.log(myWishList)
 
-const getmyWishListId= async()=>{
-console.log(myWishList)
-console.log("test")
-}
+
 
   const notification = useToast();
   const dispatch = useDispatch();
@@ -92,8 +89,6 @@ console.log("test")
       getCatagory(selectedCategory);
     }
   }, [selectedCategory]);
-
-
 
 
 
@@ -190,12 +185,13 @@ console.log("test")
     getProductData();
     getDataFromLocalStorage();
     dispatch(getUserWishList());
-    getmyWishListId()
+
+  
    
   }, [count, refresh, isFocused]);
   useEffect(() => {
     dispatch(getUserWishList());
-    getmyWishListId()
+    
   }, []);
 
   const getDataFromLocalStorage = async () => {
@@ -219,11 +215,58 @@ console.log("test")
     });
   }, [isFocused]);
 
-  const renderProductItem = ({ item }) => (
+//   const renderProductItem = ({ item }) => (
+//     <TouchableOpacity
+//       onPress={() =>
+//         navigation.navigate("SingleProductDetail", { id: item.id })
+//       }
+//     >
+//       <View style={styles.productCard}>
+//         <Image
+//           source={{ uri: item.image }}
+//           style={styles.productImage}
+//           resizeMode="contain"
+//         />
+//         <View style={styles.productDetails}>
+//           <Text style={styles.productTitle}>
+//             {truncateText(item.title, 20)}
+//           </Text>
+//           <Text style={styles.productPrice}>Price: ${item.price}</Text>
+//           <View style={styles.productIcons}>
+//             {/* <AntDesign
+//               name="hearto"
+//               size={24}
+//               color="red"
+//               style={styles.icon}
+//               onPress={() => {
+//                 WishList(item.id);
+//               }}
+//             /> */}
+
+// <HeartOutlined
+//               onPress={() => {
+//                 WishList(item.id);
+//               }}
+//               style={{ fontSize: 24 }}
+//             />
+//             <MaterialIcons
+//               name="local-offer"
+//               size={24}
+//               color="#007BFF"
+//               style={styles.icon}
+//             />
+//           </View>
+//         </View>
+//       </View>
+//     </TouchableOpacity>
+//   );
+
+const renderProductItem = ({ item }) => {
+  const isWishListed = myWishList.some((wishlistItem) => wishlistItem.id === item.id);
+
+  return (
     <TouchableOpacity
-      onPress={() =>
-        navigation.navigate("SingleProductDetail", { id: item.id })
-      }
+      onPress={() => navigation.navigate("SingleProductDetail", { id: item.id })}
     >
       <View style={styles.productCard}>
         <Image
@@ -237,31 +280,15 @@ console.log("test")
           </Text>
           <Text style={styles.productPrice}>Price: ${item.price}</Text>
           <View style={styles.productIcons}>
-            {/* <AntDesign
-              name="hearto"
-              size={24}
-              color="red"
-              style={styles.icon}
-              onPress={() => {
-                WishList(item.id);
-              }}
-            /> */}
 
-            {item.id?
-            <HeartFilled
-              onPress={() => {
-                WishList(item.id);
-              }}
-              style={{ color: "red", fontSize: 24 }}
-            />
-            :
-            <HeartOutlined
-              onPress={() => {
-                WishList(item.id);
-              }}
-              style={{ fontSize: 24 }}
-            />
-            }
+            <Pressable onPress={() => WishList(item.id)}>
+              {isWishListed ? (
+                <HeartFilled style={{ fontSize: 24, color: 'red' }} />
+              ) : (
+                <HeartOutlined style={{ fontSize: 24 }} />
+              )}
+            </Pressable>
+            
             <MaterialIcons
               name="local-offer"
               size={24}
@@ -273,6 +300,7 @@ console.log("test")
       </View>
     </TouchableOpacity>
   );
+};
 
   if (loading) {
     return (
