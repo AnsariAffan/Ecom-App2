@@ -3,12 +3,26 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import {View, StyleSheet} from 'react-native';
 import { Text } from 'react-native-paper';
+import { useDispatch, useSelector } from 'react-redux';
+import { capturUserPayment } from './api/firebaseSlice';
 
 const Oders = () => {
 
     const auth = getAuth();
     const [user, setuser] = useState();
     const isFocused = useIsFocused();
+const dispatch = useDispatch()
+    const userPayment = useSelector((state) => { 
+      return state.firebaseslice.userPayment;
+    });
+     console.log(userPayment)
+
+     useEffect(() => {
+
+     }, [isFocused]);
+
+  
+
     useEffect(() => {
       onAuthStateChanged(auth, (user) => {
         if (isFocused && user) {

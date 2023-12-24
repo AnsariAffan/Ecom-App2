@@ -198,6 +198,24 @@ export const userWishList = createAsyncThunk("api/userWishList",async (id)=>{
 })
 
 
+export const capturUserPayment = createAsyncThunk("api/capturUserPayment",async (productID)=>{
+  try {
+
+    // const myData = await axios.get(`https://fakestoreapi.com/products/${productID}`);
+    const userCollection = collection(db, "capturUserPayment");
+    const userSnapshot = await addDoc(userCollection,productID);
+    const userList = userSnapshot.docs.map((doc) => doc.data());
+
+    return userList;
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+
+
+
+
 export const getUserWishList = createAsyncThunk("api/getUserWishList",async ()=>{
   try {
 
@@ -225,6 +243,7 @@ export const firebaseslice = createSlice({
     userCarts: [],
     count: 0,
     myWishList:[],
+    userPayment:[]
 
   },
 
@@ -258,6 +277,20 @@ export const firebaseslice = createSlice({
       state.loading = false;
     });
 
+
+        //user payments
+        builders.addCase(capturUserPayment.pending, (state, action) => {
+          state.loading = true;
+        });
+        builders.addCase(capturUserPayment.fulfilled, (state, action) => {
+          state.userPayment = action.payload;
+          state.loading = false;
+        });
+        builders.addCase(capturUserPayment.rejected, (state, action) => {
+          // I repeated fulfilled
+          state.error = action.payload;
+          state.loading = false;
+        });
 
 
 

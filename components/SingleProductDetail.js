@@ -110,7 +110,7 @@ function SingleProductDetail({ route, navigation }) {
     // setCart(existingCart);
   };
 
-  const renderProductDetails = () => {
+  const RenderProductDetails = () => {
     // if (loading) {
     //   return (
     //     <View style={styles.loadingContainer}>
@@ -194,7 +194,7 @@ function SingleProductDetail({ route, navigation }) {
             </View>
           </Card.Content>
           <Card.Actions style={styles.cardActions}>
-            <Paypal productID={id} productQuantity={counter} />
+            <Paypal prd={product} productID={id} productQuantity={counter} />
             <Button
               mode="outlined"
               onPress={() => handleAddToCart(product, navigation)}
@@ -208,7 +208,7 @@ function SingleProductDetail({ route, navigation }) {
     );
   };
 
-  return <ScrollView>{renderProductDetails()}</ScrollView>;
+  return <ScrollView>{RenderProductDetails()}</ScrollView>;
 }
 
 const styles = StyleSheet.create({

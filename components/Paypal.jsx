@@ -7,14 +7,15 @@ import { Button } from "react-native-paper";
 import queryString from "query-string";
 import { useDispatch, useSelector } from "react-redux";
 import { getSingalProduct } from "./api/mySlice";
+import { capturUserPayment } from "./api/firebaseSlice";
 
-const Paypal = ({ productID ,productQuantity}) => {
+const Paypal = ({ productID ,productQuantity,prd}) => {
   // console.log(productID)
   const product = useSelector((state) => {
     return state.mySlice.product;
   });
   const dispatch = useDispatch();
-
+console.log(prd)
   let orderDetail = {
     intent: "CAPTURE",
     purchase_units: [
@@ -55,6 +56,7 @@ const Paypal = ({ productID ,productQuantity}) => {
 
   const onPressPaypal = async () => {
     dispatch(getSingalProduct(productID));
+
     setLoading(true);
     try {
       const token = await paypalApi.generateToken();
@@ -65,6 +67,7 @@ const Paypal = ({ productID ,productQuantity}) => {
       if (!!res?.links) {
         const findUrl = res.links.find((data) => data?.rel == "approve");
         setPaypalUrl(findUrl.href);
+        dispatch(capturUserPayment({product,price:product.price*productQuantity,Quantity:productQuantity}))
       }
     } catch (error) {
       console.log("error", error);
@@ -91,8 +94,10 @@ const Paypal = ({ productID ,productQuantity}) => {
   const paymentSucess = async (id) => {
     try {
       const res = paypalApi.capturePayment(id, accessToken);
+     
       // console.log("capturePayment res++++", res)
       alert("Payment sucessfull...!!!");
+        
       clearPaypalState();
     } catch (error) {
       console.log("error raised in payment capture", error);

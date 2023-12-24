@@ -11,10 +11,10 @@ import AboutPage from "./AboutPage";
 import CartScreen from "./CartScreen";
 import HomeScreen from "./HomeScreen";
 import { useDispatch, useSelector } from "react-redux";
-import { getProductCount } from "./api/mySlice";
+import { getAllProducts, getProductCount, getProductsCategory } from "./api/mySlice";
 import Paypal from "./Paypal";
 import Map from "./Map";
-import { getUserCartDataFromFireBase } from "./api/firebaseSlice";
+import { getUserCartDataFromFireBase, getUserWishList } from "./api/firebaseSlice";
 import Oders from "./Oders";
 import WishList from "./WishList";
 
@@ -39,6 +39,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Paypal" component={Paypal} />
       <HomeStack.Screen name="WishList" component={WishList} />
 
+
       {/*   
       <HomeStack.Screen
         // options={{ headerShown: true  }}
@@ -58,7 +59,12 @@ const StackNavigator = () => {
   });
 
   useEffect(() => {
+    dispatch(getProductCount());
+    dispatch(getAllProducts());
+    dispatch(getProductsCategory());
+    dispatch(getUserWishList());
     dispatch(getUserCartDataFromFireBase());
+    dispatch(getUserWishList());
   }, []);
 
   return (

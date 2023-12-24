@@ -57,11 +57,8 @@ function HomeScreen({ navigation }) {
   const [refresh, setRefresh] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-  const [heart, setheart] = useState(true);
 
-  const heartFill =()=>{
-    setheart(!false)
-  }
+
 
 
   const myWishList = useSelector((state) => {
@@ -172,7 +169,7 @@ function HomeScreen({ navigation }) {
     setProductsFound(filtered?.length > 0);
   };
 
-  const WishList = async (id) => {
+  const wishList = async (id) => {
     dispatch(userWishList(id));
     navigation.navigate("WishList", { forceReload: true });
     setRefresh(refresh);
@@ -185,10 +182,12 @@ function HomeScreen({ navigation }) {
     getProductData();
     getDataFromLocalStorage();
     dispatch(getUserWishList());
+    wishList()
+    dispatch(getUserCartDataFromFireBase());
+    dispatch(getUserWishList());
+  }, [count, refresh, isFocused]);
 
   
-   
-  }, [count, refresh, isFocused]);
   useEffect(() => {
     dispatch(getUserWishList());
     
@@ -261,7 +260,7 @@ function HomeScreen({ navigation }) {
 //     </TouchableOpacity>
 //   );
 
-const renderProductItem = ({ item }) => {
+const RenderProductItem = ({ item }) => {
   const isWishListed = myWishList.some((wishlistItem) => wishlistItem.id === item.id);
 
   return (
@@ -281,14 +280,14 @@ const renderProductItem = ({ item }) => {
           <Text style={styles.productPrice}>Price: ${item.price}</Text>
           <View style={styles.productIcons}>
 
-            <Pressable onPress={() => WishList(item.id)}>
-              {isWishListed ? (
-                <HeartFilled style={{ fontSize: 24, color: 'red' }} />
-              ) : (
-                <HeartOutlined style={{ fontSize: 24 }} />
-              )}
-            </Pressable>
-            
+            {/* <TouchableOpacity onPress={() => wishList(item.id)}>
+              {isWishListed ? 
+               <Text>Heart</Text>
+              : 
+              <Text>No Heart</Text>
+              }
+            </TouchableOpacity> */}
+
             <MaterialIcons
               name="local-offer"
               size={24}
@@ -381,7 +380,7 @@ const renderProductItem = ({ item }) => {
               return matchesSearch && matchesCategory;
             }
           )}
-          renderItem={renderProductItem}
+          renderItem={RenderProductItem}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           columnWrapperStyle={styles.columnWrapper}

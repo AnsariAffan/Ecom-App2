@@ -20,7 +20,7 @@ const Settings = ({ navigation }) => {
   const handleSignout = async (navigation) => {
     dispatch(userSignout());
     // console.log("handleSignout");
-    navigation.navigate("home", { reload: true });
+    navigation.navigate("Home", { reload: true });
   };
 
   const loading = useSelector((state) => {
